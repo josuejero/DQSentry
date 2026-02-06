@@ -1,0 +1,10 @@
+checks:
+  users_district_id_not_null:
+    probable_cause: "Upstream export omitted district join"
+    recommended_fix: "Add district_id to export template and enforce ingestion join"
+  users_email_not_null:
+    probable_cause: "CRM export allows blank email when contact is incomplete"
+    recommended_fix: "Add validation on source and require email before export"
+  events_event_ts_not_null:
+    probable_cause: "Event ingestion misses timestamp column from source system"
+    recommended_fix: "Align ingestion mapping and backfill missing event_ts"

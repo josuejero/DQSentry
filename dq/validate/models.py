@@ -35,3 +35,6 @@ class ValidationSummary:
     issue_log_path: Path
     expectation_suite_path: Path
     validation_result_path: Path
+    run_history_path: Path
+    issue_history_path: Path
+    recurrence_summary_path: Path

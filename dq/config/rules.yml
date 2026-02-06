@@ -3,7 +3,7 @@ checks:
     - id: users_email_not_null
       table: users
       column: email
-      description: "Email must be populated for all CRM users."
+      description: "Email must be populated for every CRM contact."
       threshold:
         warning: 0.02
         fail: 0.05
@@ -13,18 +13,68 @@ checks:
     - id: events_event_ts_not_null
       table: events
       column: event_ts
-      description: "Event timestamp must exist for every interaction."
+      description: "Every interaction must record an event timestamp."
       threshold:
         warning: 0.01
         fail: 0.03
       severity: 4
       weight: 1.2
       rule: "NULL_PERCENTAGE"
+    - id: users_state_not_null
+      table: users
+      column: state
+      description: "Users must have an associated state code."
+      threshold:
+        warning: 0.01
+        fail: 0.03
+      severity: 3
+      weight: 1.0
+      rule: "NULL_PERCENTAGE"
+    - id: users_district_id_not_null
+      table: users
+      column: district_id
+      description: "Each user record should land inside a district reference."
+      threshold:
+        warning: 0.10
+        fail: 0.25
+      severity: 2
+      weight: 0.7
+      rule: "NULL_PERCENTAGE"
+    - id: events_resource_id_not_null
+      table: events
+      column: resource_id
+      description: "Event rows need to reference a resource."
+      threshold:
+        warning: 0.005
+        fail: 0.01
+      severity: 4
+      weight: 1.2
+      rule: "NULL_PERCENTAGE"
+    - id: resources_resource_id_not_null
+      table: resources
+      column: resource_id
+      description: "Resource catalog entries must carry their identifier."
+      threshold:
+        warning: 0.001
+        fail: 0.01
+      severity: 3
+      weight: 0.8
+      rule: "NULL_PERCENTAGE"
   validity_accuracy:
+    - id: users_email_format
+      table: users
+      column: email
+      description: "CRM emails should match a reasonable email pattern."
+      threshold:
+        warning: 0.01
+        fail: 0.03
+      severity: 3
+      weight: 1.5
+      rule: 'PATTERN(^[^\s@]+@[^\s@]+\.[^\s@]+$)'
     - id: users_state_valid
       table: users
       column: state
-      description: "State codes must match the USPS 2-letter standard."
+      description: "State codes for users must follow the USPS standard."
       threshold:
         warning: 0.01
         fail: 0.03
@@ -34,18 +84,68 @@ checks:
     - id: districts_state_valid
       table: districts
       column: state
-      description: "District state codes must be valid USPS codes."
+      description: "District states must use the USPS 2-letter codes."
       threshold:
         warning: 0.01
         fail: 0.03
       severity: 2
       weight: 0.8
       rule: "PATTERN(^[A-Z]{2}$)"
+    - id: events_event_ts_date_range
+      table: events
+      column: event_ts
+      description: "Event timestamps must stay inside plausible calendar bounds."
+      threshold:
+        warning: 0.01
+        fail: 0.03
+      severity: 3
+      weight: 1.1
+      rule: "DATE_RANGE(1900-01-01T00:00:00Z, now)"
+    - id: newsletter_subscribed_at_date_range
+      table: newsletter
+      column: subscribed_at
+      description: "Newsletter subscription times should fit within the historical window."
+      threshold:
+        warning: 0.01
+        fail: 0.05
+      severity: 2
+      weight: 0.7
+      rule: "DATE_RANGE(2000-01-01T00:00:00Z, now)"
+    - id: newsletter_opened_at_date_range
+      table: newsletter
+      column: opened_at
+      description: "Newsletter opened timestamps must not be in the future."
+      threshold:
+        warning: 0.01
+        fail: 0.05
+      severity: 2
+      weight: 0.6
+      rule: "DATE_RANGE(2000-01-01T00:00:00Z, now)"
+    - id: newsletter_clicked_at_date_range
+      table: newsletter
+      column: clicked_at
+      description: "Newsletter click timestamps must stay within the plausible window."
+      threshold:
+        warning: 0.01
+        fail: 0.05
+      severity: 2
+      weight: 0.6
+      rule: "DATE_RANGE(2000-01-01T00:00:00Z, now)"
+    - id: numeric_counts_non_negative
+      table: "*"
+      description: "Count-style numeric columns must never go negative."
+      threshold:
+        warning: 0.0
+        fail: 0.0
+      severity: 3
+      weight: 1.2
+      rule: "NON_NEGATIVE_COUNTS"
+      column_regex: "(?i).*count.*"
   consistency:
     - id: newsletter_timestamps_order
       table: newsletter
       columns: [subscribed_at, opened_at, clicked_at]
-      description: "Opened/clicked timestamps must be monotonically increasing after subscription."
+      description: "Tracking timestamps should progress monotonically from subscribe to click."
       threshold:
         warning: 0.05
         fail: 0.1
@@ -55,13 +155,42 @@ checks:
     - id: resource_grade_band_values
       table: resources
       column: grade_band
-      description: "Grade band values must follow configured taxonomy."
+      description: "Grade-band values should match the configured taxonomy."
       threshold:
         warning: 0.1
         fail: 0.2
       severity: 2
       weight: 0.7
       rule: "ENUM(PreK-2,3-5,6-8,9-12)"
+    - id: resources_type_normalized
+      table: resources
+      column: type
+      description: "Resource types must use the canonical lower-case categories."
+      threshold:
+        warning: 0.01
+        fail: 0.03
+      severity: 2
+      weight: 0.8
+      rule: "ENUM(lesson,assessment,activity,module,pathway)"
+    - id: users_role_normalized
+      table: users
+      column: role
+      description: "User roles must stay within the allowed normalized set."
+      threshold:
+        warning: 0.01
+        fail: 0.03
+      severity: 2
+      weight: 0.8
+      rule: "ENUM(student,teacher,admin,district_admin,other)"
+    - id: districts_name_to_id_unique
+      table: districts
+      description: "Each district name should map to a single district_id after canonicalization."
+      threshold:
+        warning: 0.001
+        fail: 0.005
+      severity: 3
+      weight: 1.0
+      rule: "UNIQUE_MAPPING(district_name, district_id)"
   uniqueness:
     - id: users_email_unique
       table: users
@@ -82,6 +211,36 @@ checks:
         fail: 0.005
       severity: 5
       weight: 1.8
+      rule: "DUPLICATE_PERCENTAGE"
+    - id: resources_resource_id_unique
+      table: resources
+      column: resource_id
+      description: "Resource IDs must stay unique inside the catalog."
+      threshold:
+        warning: 0.001
+        fail: 0.005
+      severity: 4
+      weight: 1.3
+      rule: "DUPLICATE_PERCENTAGE"
+    - id: users_user_id_unique
+      table: users
+      column: user_id
+      description: "User identifiers must never collide."
+      threshold:
+        warning: 0.001
+        fail: 0.002
+      severity: 5
+      weight: 1.4
+      rule: "DUPLICATE_PERCENTAGE"
+    - id: users_email_org_unique
+      table: users
+      columns: [email, org_id]
+      description: "The (email, org) compound key should dedupe duplicates."
+      threshold:
+        warning: 0.005
+        fail: 0.02
+      severity: 3
+      weight: 1.1
       rule: "DUPLICATE_PERCENTAGE"
   integrity:
     - id: events_user_fk
@@ -104,7 +263,16 @@ checks:
       severity: 5
       weight: 1.8
       rule: "FK(resources.resource_id)"
-
+    - id: users_district_fk
+      table: users
+      column: district_id
+      description: "Users must belong to a referenceable district."
+      threshold:
+        warning: 0.01
+        fail: 0.05
+      severity: 4
+      weight: 1.2
+      rule: "FK(districts.district_id)"
 penalty_formula:
   note: "Each check produces a failure_rate (0–1). Penalty = failure_rate * (severity / 5) * weight."
   normalization: "Sum of all weights defines the denominator when scaling overall penalty back into [0,1]."

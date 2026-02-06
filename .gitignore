@@ -18,3 +18,4 @@ reports/runs/
 # Logs and temporary files
 *.log
 *.tmp
+.venv311

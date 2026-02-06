@@ -5,10 +5,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 from dq.validate.config import load_rules
 
 from scripts.score_helpers import (
@@ -24,7 +30,7 @@ from scripts.score_helpers import (
     read_run_history,
 )
 
-RULES_PATH = Path(__file__).resolve().parents[1] / "dq" / "config" / "rules.yml"
+RULES_PATH = REPO_ROOT / "dq" / "config" / "rules.yml"
 
 
 def main() -> None:

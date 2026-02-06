@@ -6,7 +6,7 @@ from pathlib import Path
 
 from dq.validate.paths import DATA_MARTS_BASE
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 REPORTS_BASE = REPO_ROOT / "reports"
 TEMPLATE_DIR = REPORTS_BASE / "templates"
 LATEST_REPORT_DIR = REPORTS_BASE / "latest"

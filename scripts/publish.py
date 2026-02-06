@@ -4,14 +4,31 @@
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
 
-from scripts.publish_helpers import (
-    LATEST_REPORT_DIR,
-    copy_to_run_directory,
-    load_score_payload,
-    mutate_context,
-    render_scorecard,
-)
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+try:
+    # when run from repo root (recommended): python scripts/publish.py ...
+    from scripts.publish_helpers import (
+        LATEST_REPORT_DIR,
+        copy_to_run_directory,
+        load_score_payload,
+        mutate_context,
+        render_scorecard,
+    )
+except ModuleNotFoundError:
+    # when run from inside scripts/: python publish.py ...
+    from publish_helpers import (
+        LATEST_REPORT_DIR,
+        copy_to_run_directory,
+        load_score_payload,
+        mutate_context,
+        render_scorecard,
+    )
 
 
 def main() -> None:

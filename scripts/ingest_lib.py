@@ -1,5 +1,7 @@
 """Reusable helpers for ingesting raw exports into DuckDB staging artifacts."""
 
+from __future__ import annotations
+
 import json
 import shutil
 from datetime import datetime, timezone
@@ -93,13 +95,19 @@ def ingest_table(con: duckdb.DuckDBPyConnection, sql: str) -> None:
 
 
 def ingest_dataset(
-    dataset_name: str, seed: int, force: bool = False
+    dataset_name: str,
+    seed: int,
+    force: bool = False,
+    *,
+    raw_path: Path | None = None,
+    stage_path: Path | None = None,
+    run_id: str | None = None,
 ) -> dict[str, str]:
-    raw_path = RAW_BASE / dataset_name / str(seed)
+    raw_path = raw_path or RAW_BASE / dataset_name / str(seed)
     if not raw_path.exists():
         raise SystemExit(f"Raw exports not found at {raw_path}")
 
-    stage_path = STAGING_BASE / dataset_name / str(seed)
+    stage_path = stage_path or STAGING_BASE / dataset_name / str(seed)
     if stage_path.exists():
         if force:
             shutil.rmtree(stage_path)
@@ -138,15 +146,29 @@ def ingest_dataset(
         con.execute(f"COPY staging_{table} TO '{dest.as_posix()}' (FORMAT PARQUET)")
 
     raw_metadata_path = raw_path / "run_metadata.json"
-    raw_metadata = {}
+    raw_metadata: dict[str, object] = {}
     if raw_metadata_path.exists():
         raw_metadata_text = raw_metadata_path.read_text()
         raw_metadata = json.loads(raw_metadata_text)
+        if run_id is None:
+            run_id = raw_metadata.get("run_id")
         (stage_path / "run_metadata.json").write_text(raw_metadata_text)
+
+    if run_id is None:
+        generated_id = f"{dataset_name}-{seed}-{int(datetime.now(timezone.utc).timestamp())}"
+        run_id = generated_id
+        metadata_payload = {
+            "dataset_name": dataset_name,
+            "seed": seed,
+            "run_id": run_id,
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+        }
+        (stage_path / "run_metadata.json").write_text(json.dumps(metadata_payload, indent=2))
 
     ingest_metadata = {
         "dataset_name": dataset_name,
         "seed": seed,
+        "run_id": run_id,
         "ingested_at": datetime.now(timezone.utc).isoformat(),
         "raw_metadata": raw_metadata,
         "duckdb_path": str(db_path),
@@ -159,4 +181,5 @@ def ingest_dataset(
         "stage_path": str(stage_path),
         "db_path": str(db_path),
         "parquet_path": str(parquet_path),
+        "run_id": str(run_id),
     }

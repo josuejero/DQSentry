@@ -41,3 +41,17 @@
 - Each run captures a `run_id` and timestamp, stored alongside generated artifacts.
 - Detection is separate from remediation: the toolkit flags issues but explicit cleaning steps log fixes to `data/staging/` or a dedicated `marts/fixes/` table.
 
+## Streamlit CSV validator
+Use the new Streamlit app under `dq/app/app.py` when you want to upload CSV exports and immediately see the scorecard, issue log, and downloadable artifacts without running the full pipeline locally.
+
+### Local run
+1. `pip install -r requirements.txt`
+2. `streamlit run dq/app/app.py`
+3. Pick the built-in Phase 1 synthetic sample or upload your own CSV(s) / ZIP bundle containing `districts.csv`, `users.csv`, `resources.csv`, `events.csv`, and `newsletter.csv`.
+
+### Deployment
+- Point Streamlit Community Cloud to this repository and use `dq/app/app.py` as the entry file.
+- The app stages uploads in an isolated temp directory, runs the ingest+validation helpers, and surfaces downloads so the Streamlit surface can stay responsive for strangers sharing their own CSVs.
+
+### Sample dataset
+The sample bundle sits at `dq/app/assets/sample_dataset.zip`; it mirrors the standard `data/raw/phase1/42` exports (including `run_metadata.json`) so you can demo the app without supplying your own files.

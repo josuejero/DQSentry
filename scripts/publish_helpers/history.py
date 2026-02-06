@@ -1,45 +1,20 @@
-"""Shared helpers for `scripts/publish.py`."""
+"""Trend/history helpers for the publish helpers package."""
 
 from __future__ import annotations
 
-import json
-import shutil
-from pathlib import Path
 from typing import Any
 
 import pandas as pd
-from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from dq.validate.output import compute_recurrence_metrics
-from dq.validate.paths import DATA_MARTS_BASE
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-REPORTS_BASE = REPO_ROOT / "reports"
-TEMPLATE_DIR = REPORTS_BASE / "templates"
-LATEST_REPORT_DIR = REPORTS_BASE / "latest"
-RUNS_REPORT_DIR = REPORTS_BASE / "runs"
-ISSUE_HISTORY_PATH = DATA_MARTS_BASE / "dq_issue_history" / "issue_history.parquet"
-
-SVG_WIDTH = 900
-SVG_HEIGHT = 320
-SVG_MARGIN = 50
-CHART_COLORS = [
-    "#1f77b4",
-    "#ff7f0e",
-    "#2ca02c",
-    "#d62728",
-    "#9467bd",
-    "#8c564b",
-    "#e377c2",
-    "#7f7f7f",
-]
-
-
-def load_score_payload(path: Path) -> dict[str, Any]:
-    if not path.exists():
-        raise SystemExit(f"Missing score payload at {path}")
-    with path.open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+from .constants import (
+    CHART_COLORS,
+    ISSUE_HISTORY_PATH,
+    SVG_HEIGHT,
+    SVG_MARGIN,
+    SVG_WIDTH,
+)
 
 
 def read_issue_history() -> pd.DataFrame:
@@ -54,9 +29,7 @@ def read_issue_history() -> pd.DataFrame:
 
 
 def build_issue_totals(history: pd.DataFrame) -> list[dict[str, Any]]:
-    if history.empty:
-        return []
-    if "issue_type" not in history.columns:
+    if history.empty or "issue_type" not in history.columns:
         return []
     totals = (
         history["issue_type"]
@@ -66,7 +39,7 @@ def build_issue_totals(history: pd.DataFrame) -> list[dict[str, Any]]:
         .reset_index(name="count")
     )
     return [
-        {"issue_type": row["issue_type"], "count": int(row["count"])}
+        {"issue_type": row["issue_type"], "count": int(row["count"]) }
         for _, row in totals.iterrows()
     ]
 
@@ -114,7 +87,11 @@ def build_trend_chart(history: pd.DataFrame) -> tuple[str, list[dict[str, str]]]
         return SVG_HEIGHT - SVG_MARGIN - (value / max_value) * span if span else SVG_HEIGHT / 2
 
     max_value = max(
-        (count_map.get((run_id, issue_type), 0) for run_id in run_ids for issue_type in top_types),
+        (
+            count_map.get((run_id, issue_type), 0)
+            for run_id in run_ids
+            for issue_type in top_types
+        ),
         default=0,
     )
     max_value = max(max_value, 1)
@@ -165,9 +142,7 @@ def build_trend_chart(history: pd.DataFrame) -> tuple[str, list[dict[str, str]]]
             f'<text x="{x:.1f}" y="{SVG_HEIGHT - SVG_MARGIN + 20}" text-anchor="middle">{label}</text>'
         )
 
-    chart_elements = "\n".join(
-        grid_lines + axis_lines + y_labels + polylines + x_labels
-    )
+    chart_elements = "\n".join(grid_lines + axis_lines + y_labels + polylines + x_labels)
     chart_svg = (
         f'<svg width="{SVG_WIDTH}" height="{SVG_HEIGHT}" viewBox="0 0 {SVG_WIDTH} {SVG_HEIGHT}" '
         'role="img" aria-label="Issue trends by type over recent runs">'
@@ -193,22 +168,3 @@ def mutate_context(score_payload: dict[str, Any]) -> dict[str, Any]:
         else [],
         "issue_totals": issue_totals,
     }
-
-
-def render_scorecard(context: dict[str, Any]) -> str:
-    env = Environment(
-        loader=FileSystemLoader(str(TEMPLATE_DIR)),
-        autoescape=select_autoescape(["html"]),
-    )
-    template = env.get_template("scorecard.html.jinja")
-    return template.render(context)
-
-
-def copy_to_run_directory(run_id: str) -> None:
-    run_dir = RUNS_REPORT_DIR / f"run_id={run_id}"
-    run_dir.mkdir(parents=True, exist_ok=True)
-    for artifact in ("index.html", "score.json", "issues.csv"):
-        src = LATEST_REPORT_DIR / artifact
-        if not src.exists():
-            continue
-        shutil.copy(src, run_dir / artifact)

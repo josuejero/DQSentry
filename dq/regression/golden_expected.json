@@ -1,16 +1,15 @@
 {
-  "score": 95.52,
-  "failed_checks": 8,
+  "score": 98.22,
+  "failed_checks": 5,
   "issue_counts": {
-    "duplicate": 5,
-    "missing": 2,
-    "orphan": 1
+    "duplicate": 3,
+    "missing": 2
   },
   "subscores": {
     "completeness": 97.7,
+    "validity_accuracy": 100.0,
     "consistency": 100.0,
-    "integrity": 94.0,
-    "uniqueness": 87.02,
-    "validity_accuracy": 100.0
+    "uniqueness": 94.41,
+    "integrity": 100.0
   }
 }

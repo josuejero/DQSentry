@@ -66,7 +66,7 @@ USER_TEMPLATES = [
         "district": "nyc",
     },
     {
-        "key": "alice",
+        "key": "alice_alt",
         "email": "ALICE.Smith@example.com",
         "org": "Mastery Labs",
         "role": "teacher",
@@ -106,6 +106,12 @@ RESOURCE_TEMPLATES = [
         "subject": "math",
         "grade_band": "PreK-2",
     },
+    {
+        "key": "missing-resource",
+        "type": "module",
+        "subject": "Unknown",
+        "grade_band": "9-12",
+    },
 ]
 
 EVENT_TEMPLATES = [
@@ -124,7 +130,7 @@ EVENT_TEMPLATES = [
         "event_ts": "01/06/2024 08:00:00",
     },
     {
-        "key": "evt-start",
+        "key": "evt-start-repeat",
         "user": "bob",
         "resource": "capstone-think",
         "event_type": "start",

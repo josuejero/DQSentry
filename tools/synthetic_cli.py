@@ -39,7 +39,13 @@ FIELD_SETS = {
 
 DISTRICT_KEYS = ("nyc", "northside", "southvalley", "sunrise")
 USER_KEYS = ("alice", "bob", "carol", "dax", "eve", "frank", "glenda")
-RESOURCE_KEYS = ("math-fundamentals", "capstone-think", "science-explorers", "pathway-start")
+RESOURCE_KEYS = (
+    "math-fundamentals",
+    "capstone-think",
+    "science-explorers",
+    "pathway-start",
+    "missing-resource",
+)
 
 
 def write_csv(path: Path, columns: tuple[str, ...], rows: list[dict]) -> None:

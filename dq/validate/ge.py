@@ -9,13 +9,13 @@ from typing import Any, Iterable
 
 from great_expectations import __version__ as ge_version
 from great_expectations.core import ExpectationSuite
-from great_expectations.core.batch import BatchMarkers, LegacyBatchDefinition
+from great_expectations.core.batch import BatchDefinition, BatchMarkers
 from great_expectations.core.expectation_configuration import ExpectationConfiguration
 from great_expectations.core.expectation_validation_result import (
     ExpectationSuiteValidationResult,
     ExpectationValidationResult,
 )
-from great_expectations.core.id_dict import BatchSpec
+from great_expectations.core.id_dict import BatchSpec, IDDict
 from great_expectations.core.run_identifier import RunIdentifier
 
 from dq.validate.models import CheckResult
@@ -34,7 +34,7 @@ def build_expectation_suite(results: Iterable[CheckResult]) -> ExpectationSuite:
         )
         for result in results
     ]
-    return ExpectationSuite(name="dq_checks", expectations=expectations)
+    return ExpectationSuite(expectation_suite_name="dq_checks", expectations=expectations)
 
 
 def build_validation_result(
@@ -76,14 +76,16 @@ def build_validation_result(
         "unsuccessful_expectations": sum(1 for r in outcome if not r.success),
     }
     run_identifier = RunIdentifier(run_name=run_id, run_time=run_ts)
+    batch_definition = BatchDefinition(
+        datasource_name="duckdb",
+        data_connector_name="default_runtime_data_connector",
+        data_asset_name=dataset_name,
+        batch_identifiers=IDDict({}),
+        batch_spec_passthrough={"path": str(stage_path)},
+    )
+
     meta = {
-        "active_batch_definition": LegacyBatchDefinition(
-            batch_spec=BatchSpec({"path": str(stage_path)}),
-            batch_identifiers={},
-            data_asset_name=dataset_name,
-            datasource_name="duckdb",
-            data_connector_name="default_runtime_data_connector",
-        ),
+        "active_batch_definition": batch_definition,
         "batch_markers": BatchMarkers({"ge_load_time": run_ts.isoformat()}),
         "batch_parameters": {"run_id": run_id},
         "batch_spec": BatchSpec({"path": str(duckdb_path)}),
@@ -98,10 +100,8 @@ def build_validation_result(
     return ExpectationSuiteValidationResult(
         success=all(r.success for r in outcome),
         results=outcome,
-        suite_name=suite.name,
         statistics=stats,
         meta=meta,
-        batch_id=run_id,
     )
 
 

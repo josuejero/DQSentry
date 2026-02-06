@@ -1,0 +1,101 @@
+name: DQ Scheduled Pipeline
+
+on:
+  schedule:
+    # Run nightly at 04:00 UTC
+    - cron: '0 4 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+env:
+  DATASET_NAME: phase1
+  SEED: ${{ github.run_number }}
+  SKIP_SAMPLE_DATA_GENERATION: false
+
+jobs:
+  scheduled-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate synthetic data (optional)
+        if: env.SKIP_SAMPLE_DATA_GENERATION != 'true'
+        run: |
+          python tools/generate_synthetic.py \
+            --dataset-name "$DATASET_NAME" \
+            --seed "$SEED" \
+            --force
+
+      - name: Ingest data
+        run: |
+          python scripts/ingest.py \
+            --dataset-name "$DATASET_NAME" \
+            --seed "$SEED" \
+            --force
+
+      - name: Validate data
+        run: |
+          python scripts/validate_runner.py \
+            --dataset-name "$DATASET_NAME" \
+            --seed "$SEED"
+
+      - name: Score run
+        id: score
+        shell: bash
+        run: |
+          STAGE_DIR="data/staging/$DATASET_NAME/$SEED"
+          RUN_ID=$(STAGE_DIR="$STAGE_DIR" python - <<'PY'
+from pathlib import Path
+import json, os
+metadata_path = Path(os.environ['STAGE_DIR']) / 'run_metadata.json'
+print(json.loads(metadata_path.read_text())['run_id'])
+PY
+          )
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+          python scripts/score.py --run-id "$RUN_ID"
+
+      - name: Build scorecard
+        run: |
+          python scripts/publish.py --run-id "${{ steps.score.outputs.run_id }}"
+
+      - name: Enforce quality gate
+        run: |
+          python scripts/quality_gate.py --run-id "${{ steps.score.outputs.run_id }}"
+
+      - name: Upload run artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dq-scheduled-run-${{ steps.score.outputs.run_id }}
+          path: |
+            reports/latest
+            reports/runs/run_id=${{ steps.score.outputs.run_id }}
+            data/marts/dq_check_results/run_id=${{ steps.score.outputs.run_id }}
+            data/marts/dq_issue_log/run_id=${{ steps.score.outputs.run_id }}
+
+      - name: Publish scorecard to GitHub Pages
+        if: success()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: reports/latest
+          publish_branch: gh-pages
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
+          commit_message: "chore: publish scheduled DQ scorecard run ${{ steps.score.outputs.run_id }}"
+          allow_empty_commit: true

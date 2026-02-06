@@ -56,12 +56,14 @@ def read_issue_history() -> pd.DataFrame:
 def build_issue_totals(history: pd.DataFrame) -> list[dict[str, Any]]:
     if history.empty:
         return []
+    if "issue_type" not in history.columns:
+        return []
     totals = (
         history["issue_type"]
         .fillna("Unknown")
         .value_counts()
-        .reset_index()
-        .rename(columns={"index": "issue_type", "issue_type": "count"})
+        .rename_axis("issue_type")
+        .reset_index(name="count")
     )
     return [
         {"issue_type": row["issue_type"], "count": int(row["count"])}

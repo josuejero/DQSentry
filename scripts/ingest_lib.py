@@ -116,7 +116,9 @@ def ingest_dataset(
     parquet_path.mkdir(exist_ok=True)
     db_path = stage_path / "staging.duckdb"
     con = duckdb.connect(str(db_path))
-    con.create_function("py_parse_ts", parse_timestamp, return_type=duckdb.sqltypes.TIMESTAMP)
+    con.create_function(
+        "py_parse_ts", parse_timestamp, return_type=duckdb.sqltype("TIMESTAMP")
+    )
 
     for spec in TABLE_SPECS:
         source_path = path_literal(raw_path / spec["source"])

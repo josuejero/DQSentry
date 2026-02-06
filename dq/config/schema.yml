@@ -1,0 +1,106 @@
+tables:
+  users:
+    description: "Core CRM data describing people with location and role metadata."
+    primary_key: user_id
+    columns:
+      user_id:
+        type: uuid
+        nullable: false
+      email:
+        type: email
+        nullable: false
+      org_id:
+        type: uuid
+        nullable: false
+      role:
+        type: enum
+        nullable: false
+        allowed: [student, teacher, admin, district_admin, other]
+      state:
+        type: state_code
+        nullable: false
+      district_id:
+        type: uuid
+        nullable: true
+  resources:
+    description: "Catalog of learning objects, mapped to subject and grade intent."
+    primary_key: resource_id
+    columns:
+      resource_id:
+        type: uuid
+        nullable: false
+      type:
+        type: enum
+        nullable: false
+        allowed: [lesson, assessment, activity, module, pathway]
+      subject:
+        type: string
+        nullable: false
+      grade_band:
+        type: string
+        nullable: false
+  events:
+    description: "Interaction log between users and resources."
+    primary_key: event_id
+    columns:
+      event_id:
+        type: uuid
+        nullable: false
+      user_id:
+        type: uuid
+        nullable: false
+      resource_id:
+        type: uuid
+        nullable: false
+      event_type:
+        type: enum
+        nullable: false
+        allowed: [view, start, complete, submit, share]
+      event_ts:
+        type: timestamp
+        nullable: false
+  newsletter:
+    description: "Marketing/crm newsletter status and engagement." 
+    primary_key: email
+    columns:
+      email:
+        type: email
+        nullable: false
+      subscribed_at:
+        type: timestamp
+        nullable: false
+      opened_at:
+        type: timestamp
+        nullable: true
+      clicked_at:
+        type: timestamp
+        nullable: true
+  districts:
+    description: "District reference data for alignment and reporting."
+    primary_key: district_id
+    columns:
+      district_id:
+        type: uuid
+        nullable: false
+      district_name:
+        type: string
+        nullable: false
+      state:
+        type: state_code
+        nullable: false
+
+required_fields:
+  - users.user_id
+  - users.email
+  - events.event_id
+  - events.user_id
+  - events.resource_id
+  - events.event_ts
+  - newsletter.email
+  - districts.district_id
+
+column_expectations:
+  users.state:
+    pattern: '^[A-Z]{2}$'
+  districts.state:
+    pattern: '^[A-Z]{2}$'

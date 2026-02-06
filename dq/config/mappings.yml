@@ -1,0 +1,17 @@
+grade_bands:
+  PreK-2:
+    synonyms: ["prek-2", "k-2", "grades pre k to 2"]
+  3-5:
+    synonyms: ["grades 3-5", "third to fifth"]
+  6-8:
+    synonyms: ["grades 6-8", "middle school"]
+  9-12:
+    synonyms: ["grades 9-12", "high school"]
+state_codes:
+  AL: Alabama
+  AK: Alaska
+  AZ: Arizona
+  CA: California
+  NY: New York
+district_overrides:
+  "NYC": "NYC Public Schools"

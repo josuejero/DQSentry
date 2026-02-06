@@ -1,0 +1,114 @@
+checks:
+  completeness:
+    - id: users_email_not_null
+      table: users
+      column: email
+      description: "Email must be populated for all CRM users."
+      threshold:
+        warning: 0.02
+        fail: 0.05
+      severity: 3
+      weight: 1.5
+      rule: "NULL_PERCENTAGE"
+    - id: events_event_ts_not_null
+      table: events
+      column: event_ts
+      description: "Event timestamp must exist for every interaction."
+      threshold:
+        warning: 0.01
+        fail: 0.03
+      severity: 4
+      weight: 1.2
+      rule: "NULL_PERCENTAGE"
+  validity_accuracy:
+    - id: users_state_valid
+      table: users
+      column: state
+      description: "State codes must match the USPS 2-letter standard."
+      threshold:
+        warning: 0.01
+        fail: 0.03
+      severity: 3
+      weight: 1.0
+      rule: "PATTERN(^[A-Z]{2}$)"
+    - id: districts_state_valid
+      table: districts
+      column: state
+      description: "District state codes must be valid USPS codes."
+      threshold:
+        warning: 0.01
+        fail: 0.03
+      severity: 2
+      weight: 0.8
+      rule: "PATTERN(^[A-Z]{2}$)"
+  consistency:
+    - id: newsletter_timestamps_order
+      table: newsletter
+      columns: [subscribed_at, opened_at, clicked_at]
+      description: "Opened/clicked timestamps must be monotonically increasing after subscription."
+      threshold:
+        warning: 0.05
+        fail: 0.1
+      severity: 2
+      weight: 0.9
+      rule: "TIMESTAMP_ORDER"
+    - id: resource_grade_band_values
+      table: resources
+      column: grade_band
+      description: "Grade band values must follow configured taxonomy."
+      threshold:
+        warning: 0.1
+        fail: 0.2
+      severity: 2
+      weight: 0.7
+      rule: "ENUM(PreK-2,3-5,6-8,9-12)"
+  uniqueness:
+    - id: users_email_unique
+      table: users
+      column: email
+      description: "Email should uniquely identify CRM records."
+      threshold:
+        warning: 0.005
+        fail: 0.02
+      severity: 4
+      weight: 1.3
+      rule: "DUPLICATE_PERCENTAGE"
+    - id: events_pk_unique
+      table: events
+      column: event_id
+      description: "Each event_id must be unique to avoid lost history."
+      threshold:
+        warning: 0.001
+        fail: 0.005
+      severity: 5
+      weight: 1.8
+      rule: "DUPLICATE_PERCENTAGE"
+  integrity:
+    - id: events_user_fk
+      table: events
+      column: user_id
+      description: "Events must reference an existing user record."
+      threshold:
+        warning: 0.01
+        fail: 0.03
+      severity: 5
+      weight: 2.0
+      rule: "FK(users.user_id)"
+    - id: events_resource_fk
+      table: events
+      column: resource_id
+      description: "Resources referenced in events must exist in the master catalog."
+      threshold:
+        warning: 0.01
+        fail: 0.03
+      severity: 5
+      weight: 1.8
+      rule: "FK(resources.resource_id)"
+
+penalty_formula:
+  note: "Each check produces a failure_rate (0–1). Penalty = failure_rate * (severity / 5) * weight."
+  normalization: "Sum of all weights defines the denominator when scaling overall penalty back into [0,1]."
+
+score:
+  baseline: 100
+  min: 0

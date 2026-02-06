@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DQ Scorecard</title>
+  <style>
+    :root {
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: #0f172a;
+    }
+    body {
+      margin: 0;
+      background: #f4f6fb;
+    }
+    .page {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    header.hero {
+      background: #111827;
+      color: #fff;
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .score-box {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .score-value {
+      font-size: 3rem;
+      font-weight: 700;
+    }
+    .score-label {
+      font-size: 1rem;
+      color: #d1d5db;
+    }
+    .hero meta {
+      color: #cbd5f5;
+    }
+    section {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      border-bottom: 1px solid #e0e7ff;
+      padding-bottom: 0.25rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.75rem;
+    }
+    table th,
+    table td {
+      border: 1px solid #e5e7eb;
+      padding: 0.5rem;
+      text-align: left;
+      vertical-align: middle;
+    }
+    table th {
+      background: #f8fafc;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .grid article {
+      background: #111827;
+      color: #fff;
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .grid article h3 {
+      margin: 0;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #c7d2fe;
+    }
+    .grid article strong {
+      font-size: 1.8rem;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.15);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .meta {
+      font-size: 0.95rem;
+      color: #e2e8f0;
+      margin-top: 0.5rem;
+    }
+    .section-note {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #475569;
+    }
+    .chart-placeholder {
+      text-align: center;
+      color: #94a3b8;
+    }
+    .chart {
+      margin-top: 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1rem;
+      background: #f8fafc;
+    }
+    .chart svg {
+      max-width: 100%;
+      height: auto;
+    }
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.75rem;
+    }
+    .chart-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.85rem;
+      background: #fff;
+    }
+    .chart-legend .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .badge + .meta {
+      margin-top: 0.75rem;
+    }
+    .issue-table a {
+      color: #1d4ed8;
+      text-decoration: none;
+    }
+    .issue-totals {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-weight: 600;
+    }
+    .chart-empty {
+      color: #475569;
+      text-align: center;
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <span class="badge">Latest run</span>
+      <h1>DQ Scorecard</h1>
+      <p class="meta">
+        Dataset {{ score_data.dataset_name }} · Run {{ score_data.run_id }} · {{ score_data.run_ts }}
+        · Generated at {{ score_data.generated_at }}
+      </p>
+      <div class="score-box">
+        <span class="score-value">{{ score_data.score | round(1) }}</span>
+        <span class="score-label">Overall data quality score</span>
+      </div>
+      <p class="meta">
+        {{ score_data.total_checks }} checks · {{ score_data.failed_checks }} issues ·
+        Baseline {{ score_data.baseline }} · Floor {{ score_data.minimum }}
+      </p>
+    </header>
+
+    <section>
+      <h2>Dimension subscores</h2>
+      <div class="grid">
+        {% for dimension, value in score_data.subscores.items() %}
+        <article>
+          <h3>{{ dimension.replace('_', ' ') | title }}</h3>
+          <strong>{{ value | round(1) }}</strong>
+          <span class="section-note">Higher is better</span>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section>
+      <h2>Checks summary</h2>
+      <p class="section-note">
+        Displaying {{ check_rows | length }} of {{ score_data.total_checks }} checks.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Check</th>
+            <th>Table</th>
+            <th>Dimension</th>
+            <th>Status</th>
+            <th>Failure %</th>
+            <th>Severity</th>
+            <th>Weight</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for check in check_rows %}
+          <tr>
+            <td>{{ check.check_id }}</td>
+            <td>{{ check.table_name }}</td>
+            <td>{{ check.dimension }}</td>
+            <td>{{ check.status }}</td>
+            <td>{{ (check.failure_rate * 100) | round(2) }}%</td>
+            <td>{{ check.severity }}</td>
+            <td>{{ check.weight | round(1) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Issue log</h2>
+      <p class="section-note">
+        Issues detected: {{ score_data.failed_checks }} ·
+        <a href="issues.csv" download>Download CSV</a>
+      </p>
+      {% if issue_rows %}
+      <table class="issue-table">
+        <thead>
+          <tr>
+            <th>Check</th>
+            <th>Issue type</th>
+            <th>Severity</th>
+            <th>Affected rows %</th>
+            <th>Root cause</th>
+            <th>Recommended fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for issue in issue_rows %}
+          <tr>
+            <td>{{ issue.check_name }}</td>
+            <td>{{ issue.issue_type }}</td>
+            <td>{{ issue.severity }}</td>
+            <td>{{ (issue.affected_pct * 100) | round(2) }}%</td>
+            <td>{{ issue.probable_root_cause }}</td>
+            <td>{{ issue.recommended_fix }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="section-note">No issues recorded for this run.</p>
+      {% endif %}
+    </section>
+
+    <section>
+      <h2>Issue trends</h2>
+      <div class="chart">
+        {{ chart_svg | safe }}
+      </div>
+      {% if chart_legend %}
+      <div class="chart-legend">
+        {% for entry in chart_legend %}
+        <span>
+          <span class="swatch" style="background: {{ entry.color }}"></span>
+          {{ entry.label }}
+        </span>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% if issue_totals %}
+      <ul class="issue-totals">
+        {% for total in issue_totals[:6] %}
+        <li>{{ total.issue_type }}: {{ total.count }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </section>
+
+    <section>
+      <h2>Recurring issues & SOP guidance</h2>
+      {% if recurring_issues %}
+      <table>
+        <thead>
+          <tr>
+            <th>Check</th>
+            <th>Table</th>
+            <th>Issue Type</th>
+            <th>Occurrences</th>
+            <th>Median affected %</th>
+            <th>Last seen</th>
+            <th>Root cause</th>
+            <th>Recommended fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for issue in recurring_issues %}
+          <tr>
+            <td>{{ issue.check_name }}</td>
+            <td>{{ issue.table_name }}</td>
+            <td>{{ issue.issue_type }}</td>
+            <td>{{ issue.occurrences }}</td>
+            <td>{{ issue.median_affected_pct | round(3) }}</td>
+            <td>{{ issue.last_seen }}</td>
+            <td>{{ issue.probable_root_cause }}</td>
+            <td>{{ issue.recommended_fix }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="section-note">Not enough history yet to highlight recurring issues.</p>
+      {% endif %}
+    </section>
+  </div>
+</body>
+</html>

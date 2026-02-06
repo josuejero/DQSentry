@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DQ Scorecard</title>
+  <style>
+    :root {
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: #0f172a;
+    }
+    body {
+      margin: 0;
+      background: #f4f6fb;
+    }
+    .page {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    header.hero {
+      background: #111827;
+      color: #fff;
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .score-box {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .score-value {
+      font-size: 3rem;
+      font-weight: 700;
+    }
+    .score-label {
+      font-size: 1rem;
+      color: #d1d5db;
+    }
+    .hero meta {
+      color: #cbd5f5;
+    }
+    section {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      border-bottom: 1px solid #e0e7ff;
+      padding-bottom: 0.25rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.75rem;
+    }
+    table th,
+    table td {
+      border: 1px solid #e5e7eb;
+      padding: 0.5rem;
+      text-align: left;
+      vertical-align: middle;
+    }
+    table th {
+      background: #f8fafc;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .grid article {
+      background: #111827;
+      color: #fff;
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .grid article h3 {
+      margin: 0;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #c7d2fe;
+    }
+    .grid article strong {
+      font-size: 1.8rem;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.15);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .meta {
+      font-size: 0.95rem;
+      color: #e2e8f0;
+      margin-top: 0.5rem;
+    }
+    .section-note {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #475569;
+    }
+    .chart-placeholder {
+      text-align: center;
+      color: #94a3b8;
+    }
+    .chart {
+      margin-top: 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1rem;
+      background: #f8fafc;
+    }
+    .chart svg {
+      max-width: 100%;
+      height: auto;
+    }
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.75rem;
+    }
+    .chart-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.85rem;
+      background: #fff;
+    }
+    .chart-legend .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .badge + .meta {
+      margin-top: 0.75rem;
+    }
+    .issue-table a {
+      color: #1d4ed8;
+      text-decoration: none;
+    }
+    .issue-totals {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-weight: 600;
+    }
+    .chart-empty {
+      color: #475569;
+      text-align: center;
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <span class="badge">Latest run</span>
+      <h1>DQ Scorecard</h1>
+      <p class="meta">
+        Dataset phase1 · Run ecb26d74-5b78-5ec9-a5f7-620407ec1ef0 · 2026-02-06T19:56:46.420515+00:00
+        · Generated at 2026-02-06T19:56:47.623601+00:00
+      </p>
+      <div class="score-box">
+        <span class="score-value">98.2</span>
+        <span class="score-label">Overall data quality score</span>
+      </div>
+      <p class="meta">
+        27 checks · 5 issues ·
+        Baseline 100.0 · Floor 0.0
+      </p>
+    </header>
+
+    <section>
+      <h2>Dimension subscores</h2>
+      <div class="grid">
+        
+        <article>
+          <h3>Completeness</h3>
+          <strong>97.7</strong>
+          <span class="section-note">Higher is better</span>
+        </article>
+        
+        <article>
+          <h3>Consistency</h3>
+          <strong>100.0</strong>
+          <span class="section-note">Higher is better</span>
+        </article>
+        
+        <article>
+          <h3>Integrity</h3>
+          <strong>100.0</strong>
+          <span class="section-note">Higher is better</span>
+        </article>
+        
+        <article>
+          <h3>Uniqueness</h3>
+          <strong>94.4</strong>
+          <span class="section-note">Higher is better</span>
+        </article>
+        
+        <article>
+          <h3>Validity Accuracy</h3>
+          <strong>100.0</strong>
+          <span class="section-note">Higher is better</span>
+        </article>
+        
+      </div>
+    </section>
+
+    <section>
+      <h2>Checks summary</h2>
+      <p class="section-note">
+        Displaying 27 of 27 checks.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Check</th>
+            <th>Table</th>
+            <th>Dimension</th>
+            <th>Status</th>
+            <th>Failure %</th>
+            <th>Severity</th>
+            <th>Weight</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>resources_resource_id_unique</td>
+            <td>resources</td>
+            <td>uniqueness</td>
+            <td>fail</td>
+            <td>16.67%</td>
+            <td>4</td>
+            <td>1.3</td>
+          </tr>
+          
+          <tr>
+            <td>users_email_not_null</td>
+            <td>users</td>
+            <td>completeness</td>
+            <td>fail</td>
+            <td>12.5%</td>
+            <td>3</td>
+            <td>1.5</td>
+          </tr>
+          
+          <tr>
+            <td>users_email_unique</td>
+            <td>users</td>
+            <td>uniqueness</td>
+            <td>fail</td>
+            <td>12.5%</td>
+            <td>4</td>
+            <td>1.3</td>
+          </tr>
+          
+          <tr>
+            <td>users_email_org_unique</td>
+            <td>users</td>
+            <td>uniqueness</td>
+            <td>fail</td>
+            <td>12.5%</td>
+            <td>3</td>
+            <td>1.1</td>
+          </tr>
+          
+          <tr>
+            <td>numeric_counts_non_negative</td>
+            <td>*</td>
+            <td>validity_accuracy</td>
+            <td>fail</td>
+            <td>0.0%</td>
+            <td>3</td>
+            <td>1.2</td>
+          </tr>
+          
+          <tr>
+            <td>events_event_ts_not_null</td>
+            <td>events</td>
+            <td>completeness</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>4</td>
+            <td>1.2</td>
+          </tr>
+          
+          <tr>
+            <td>users_state_not_null</td>
+            <td>users</td>
+            <td>completeness</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>3</td>
+            <td>1.0</td>
+          </tr>
+          
+          <tr>
+            <td>events_resource_id_not_null</td>
+            <td>events</td>
+            <td>completeness</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>4</td>
+            <td>1.2</td>
+          </tr>
+          
+          <tr>
+            <td>resources_resource_id_not_null</td>
+            <td>resources</td>
+            <td>completeness</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>3</td>
+            <td>0.8</td>
+          </tr>
+          
+          <tr>
+            <td>users_email_format</td>
+            <td>users</td>
+            <td>validity_accuracy</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>3</td>
+            <td>1.5</td>
+          </tr>
+          
+          <tr>
+            <td>users_state_valid</td>
+            <td>users</td>
+            <td>validity_accuracy</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>3</td>
+            <td>1.0</td>
+          </tr>
+          
+          <tr>
+            <td>districts_state_valid</td>
+            <td>districts</td>
+            <td>validity_accuracy</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>2</td>
+            <td>0.8</td>
+          </tr>
+          
+          <tr>
+            <td>events_event_ts_date_range</td>
+            <td>events</td>
+            <td>validity_accuracy</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>3</td>
+            <td>1.1</td>
+          </tr>
+          
+          <tr>
+            <td>newsletter_subscribed_at_date_range</td>
+            <td>newsletter</td>
+            <td>validity_accuracy</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>2</td>
+            <td>0.7</td>
+          </tr>
+          
+          <tr>
+            <td>newsletter_opened_at_date_range</td>
+            <td>newsletter</td>
+            <td>validity_accuracy</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>2</td>
+            <td>0.6</td>
+          </tr>
+          
+          <tr>
+            <td>newsletter_clicked_at_date_range</td>
+            <td>newsletter</td>
+            <td>validity_accuracy</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>2</td>
+            <td>0.6</td>
+          </tr>
+          
+          <tr>
+            <td>newsletter_timestamps_order</td>
+            <td>newsletter</td>
+            <td>consistency</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>2</td>
+            <td>0.9</td>
+          </tr>
+          
+          <tr>
+            <td>resource_grade_band_values</td>
+            <td>resources</td>
+            <td>consistency</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>2</td>
+            <td>0.7</td>
+          </tr>
+          
+          <tr>
+            <td>resources_type_normalized</td>
+            <td>resources</td>
+            <td>consistency</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>2</td>
+            <td>0.8</td>
+          </tr>
+          
+          <tr>
+            <td>users_role_normalized</td>
+            <td>users</td>
+            <td>consistency</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>2</td>
+            <td>0.8</td>
+          </tr>
+          
+          <tr>
+            <td>districts_name_to_id_unique</td>
+            <td>districts</td>
+            <td>consistency</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>3</td>
+            <td>1.0</td>
+          </tr>
+          
+          <tr>
+            <td>events_pk_unique</td>
+            <td>events</td>
+            <td>uniqueness</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>5</td>
+            <td>1.8</td>
+          </tr>
+          
+          <tr>
+            <td>users_user_id_unique</td>
+            <td>users</td>
+            <td>uniqueness</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>5</td>
+            <td>1.4</td>
+          </tr>
+          
+          <tr>
+            <td>events_user_fk</td>
+            <td>events</td>
+            <td>integrity</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>5</td>
+            <td>2.0</td>
+          </tr>
+          
+          <tr>
+            <td>events_resource_fk</td>
+            <td>events</td>
+            <td>integrity</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>5</td>
+            <td>1.8</td>
+          </tr>
+          
+          <tr>
+            <td>users_district_fk</td>
+            <td>users</td>
+            <td>integrity</td>
+            <td>pass</td>
+            <td>0.0%</td>
+            <td>4</td>
+            <td>1.2</td>
+          </tr>
+          
+          <tr>
+            <td>users_district_id_not_null</td>
+            <td>users</td>
+            <td>completeness</td>
+            <td>warn</td>
+            <td>12.5%</td>
+            <td>2</td>
+            <td>0.7</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Issue log</h2>
+      <p class="section-note">
+        Issues detected: 5 ·
+        <a href="issues.csv" download>Download CSV</a>
+      </p>
+      
+      <table class="issue-table">
+        <thead>
+          <tr>
+            <th>Check</th>
+            <th>Issue type</th>
+            <th>Severity</th>
+            <th>Affected rows %</th>
+            <th>Root cause</th>
+            <th>Recommended fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>resources_resource_id_unique</td>
+            <td>duplicate</td>
+            <td>4</td>
+            <td>16.67%</td>
+            <td>Resource IDs must stay unique inside the catalog.</td>
+            <td>Enforce DUPLICATE_PERCENTAGE for resources</td>
+          </tr>
+          
+          <tr>
+            <td>users_email_unique</td>
+            <td>duplicate</td>
+            <td>4</td>
+            <td>12.5%</td>
+            <td>Email should uniquely identify CRM records.</td>
+            <td>Enforce DUPLICATE_PERCENTAGE for users</td>
+          </tr>
+          
+          <tr>
+            <td>users_email_not_null</td>
+            <td>missing</td>
+            <td>3</td>
+            <td>12.5%</td>
+            <td>CRM export allows blank email when contact is incomplete</td>
+            <td>Add validation on source and require email before export</td>
+          </tr>
+          
+          <tr>
+            <td>users_email_org_unique</td>
+            <td>duplicate</td>
+            <td>3</td>
+            <td>12.5%</td>
+            <td>The (email, org) compound key should dedupe duplicates.</td>
+            <td>Enforce DUPLICATE_PERCENTAGE for users</td>
+          </tr>
+          
+          <tr>
+            <td>users_district_id_not_null</td>
+            <td>missing</td>
+            <td>2</td>
+            <td>12.5%</td>
+            <td>Upstream export omitted district join</td>
+            <td>Add district_id to export template and enforce ingestion join</td>
+          </tr>
+          
+        </tbody>
+      </table>
+      
+    </section>
+
+    <section>
+      <h2>Issue trends</h2>
+      <div class="chart">
+        <svg width="900" height="320" viewBox="0 0 900 320" role="img" aria-label="Issue trends by type over recent runs"><line x1="50" y1="270.0" x2="850" y2="270.0" stroke="#ddd" stroke-dasharray="4,4"/>
+<line x1="50" y1="215.0" x2="850" y2="215.0" stroke="#ddd" stroke-dasharray="4,4"/>
+<line x1="50" y1="160.0" x2="850" y2="160.0" stroke="#ddd" stroke-dasharray="4,4"/>
+<line x1="50" y1="105.0" x2="850" y2="105.0" stroke="#ddd" stroke-dasharray="4,4"/>
+<line x1="50" y1="50.0" x2="850" y2="50.0" stroke="#ddd" stroke-dasharray="4,4"/>
+<line x1="50" y1="50" x2="50" y2="270" stroke="#333" stroke-width="1.2"/>
+<line x1="50" y1="270" x2="850" y2="270" stroke="#333" stroke-width="1.2"/>
+<text x="40" y="274.0" text-anchor="end">0</text>
+<text x="40" y="219.0" text-anchor="end">1</text>
+<text x="40" y="164.0" text-anchor="end">2</text>
+<text x="40" y="109.0" text-anchor="end">2</text>
+<text x="40" y="54.0" text-anchor="end">3</text>
+<polyline fill="none" stroke="#1f77b4" stroke-width="2" points="50.0,50.0 850.0,50.0" />
+<polyline fill="none" stroke="#ff7f0e" stroke-width="2" points="50.0,123.3 850.0,123.3" />
+<text x="50.0" y="290" text-anchor="middle">ecb26d74-5b78-5ec9-a5f7-620407ec1ef0 · 2026-02-06</text>
+<text x="850.0" y="290" text-anchor="middle">f8d44371-2f34-57b6-ae7c-190fff0bfd55 · 2026-02-06</text></svg>
+      </div>
+      
+      <div class="chart-legend">
+        
+        <span>
+          <span class="swatch" style="background: #1f77b4"></span>
+          duplicate
+        </span>
+        
+        <span>
+          <span class="swatch" style="background: #ff7f0e"></span>
+          missing
+        </span>
+        
+      </div>
+      
+      
+      <ul class="issue-totals">
+        
+        <li>duplicate: 6</li>
+        
+        <li>missing: 4</li>
+        
+      </ul>
+      
+    </section>
+
+    <section>
+      <h2>Recurring issues & SOP guidance</h2>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Check</th>
+            <th>Table</th>
+            <th>Issue Type</th>
+            <th>Occurrences</th>
+            <th>Median affected %</th>
+            <th>Last seen</th>
+            <th>Root cause</th>
+            <th>Recommended fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            <td>resources_resource_id_unique</td>
+            <td>resources</td>
+            <td>duplicate</td>
+            <td>2</td>
+            <td>0.167</td>
+            <td>2026-02-06T19:56:51.321278+00:00</td>
+            <td>Resource IDs must stay unique inside the catalog.</td>
+            <td>Enforce DUPLICATE_PERCENTAGE for resources</td>
+          </tr>
+          
+          <tr>
+            <td>users_district_id_not_null</td>
+            <td>users</td>
+            <td>missing</td>
+            <td>2</td>
+            <td>0.125</td>
+            <td>2026-02-06T19:56:51.321278+00:00</td>
+            <td>Upstream export omitted district join</td>
+            <td>Add district_id to export template and enforce ingestion join</td>
+          </tr>
+          
+          <tr>
+            <td>users_email_not_null</td>
+            <td>users</td>
+            <td>missing</td>
+            <td>2</td>
+            <td>0.125</td>
+            <td>2026-02-06T19:56:51.321278+00:00</td>
+            <td>CRM export allows blank email when contact is incomplete</td>
+            <td>Add validation on source and require email before export</td>
+          </tr>
+          
+          <tr>
+            <td>users_email_org_unique</td>
+            <td>users</td>
+            <td>duplicate</td>
+            <td>2</td>
+            <td>0.125</td>
+            <td>2026-02-06T19:56:51.321278+00:00</td>
+            <td>The (email, org) compound key should dedupe duplicates.</td>
+            <td>Enforce DUPLICATE_PERCENTAGE for users</td>
+          </tr>
+          
+          <tr>
+            <td>users_email_unique</td>
+            <td>users</td>
+            <td>duplicate</td>
+            <td>2</td>
+            <td>0.125</td>
+            <td>2026-02-06T19:56:51.321278+00:00</td>
+            <td>Email should uniquely identify CRM records.</td>
+            <td>Enforce DUPLICATE_PERCENTAGE for users</td>
+          </tr>
+          
+        </tbody>
+      </table>
+      
+    </section>
+  </div>
+</body>
+</html>

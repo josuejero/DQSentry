@@ -1,8 +1,12 @@
 name: DQ Push Pipeline
 
 on:
-  push: {}
-  pull_request: {}
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 permissions:
   contents: write
@@ -22,8 +26,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-          cache: 'pip'
+          python-version: "3.11"
+          cache: "pip"
           cache-dependency-path: requirements.txt
 
       - name: Install dependencies
@@ -58,12 +62,12 @@ jobs:
         run: |
           STAGE_DIR="data/staging/$DATASET_NAME/$SEED"
           RUN_ID=$(STAGE_DIR="$STAGE_DIR" python - <<'PY'
-from pathlib import Path
-import json, os
-metadata_path = Path(os.environ['STAGE_DIR']) / 'run_metadata.json'
-print(json.loads(metadata_path.read_text())['run_id'])
-PY
-          )
+          from pathlib import Path
+          import json, os
+          metadata_path = Path(os.environ['STAGE_DIR']) / 'run_metadata.json'
+          print(json.loads(metadata_path.read_text())['run_id'])
+          PY
+                    )
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
           python scripts/score.py --run-id "$RUN_ID"
 

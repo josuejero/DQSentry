@@ -27,6 +27,9 @@ from dq.validate.rule_executor import RuleEvaluator
 from dq.validate.scoring import calculate_scores
 from dq.validate.config import load_rules
 
+from dq.anomaly import run_anomaly_detection
+from dq.schema_drift import run_schema_drift_detection
+
 RULES_PATH = Path(__file__).resolve().parents[2] / "dq" / "config" / "rules.yml"
 
 
@@ -76,6 +79,21 @@ class ValidationRunner:
         validation_path = write_json(
             validation.to_json_dict(),
             GE_ARTIFACTS_BASE / "validations" / f"{self.run_id}--{suite.name}.json",
+        )
+
+        run_anomaly_detection(
+            self.run_id,
+            self.dataset_name,
+            self.run_ts.isoformat(),
+            self.duckdb_path,
+        )
+
+        run_schema_drift_detection(
+            self.run_id,
+            self.dataset_name,
+            self.run_ts.isoformat(),
+            self.stage_path,
+            self.duckdb_path,
         )
 
         return ValidationSummary(

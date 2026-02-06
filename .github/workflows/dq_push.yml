@@ -67,6 +67,10 @@ PY
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
           python scripts/score.py --run-id "$RUN_ID"
 
+      - name: Golden dataset regression
+        run: |
+          python -m scripts.regression
+
       - name: Build scorecard
         run: |
           python scripts/publish.py --run-id "${{ steps.score.outputs.run_id }}"

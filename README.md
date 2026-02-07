@@ -1,57 +1,48 @@
-# DQSentry: Phase 0 — Design, Contracts, Scoring
+# DQSentry: Phase 0 · Data Quality Sentinel
 
-## What this proves
-- The team can codify a full data quality playbook (schema expectations, validation rules, scoring, alerts) without writing any ad-hoc scripts.
-- The foundation is repeatable: every run is reproducible, generates a `run_id`, and outputs portable Parquet artifacts for auditing.
-- Quality decisions are explainable: checks, thresholds, severities, and weights live in YAML so non-engineers can adjust them and anyone can understand how a score was derived.
+The DQSentry project proves you can codify an entire data-quality playbook (schema expectations, validation rules, scoring, alerts, and publication) without weaving together ad-hoc scripts. Every run is deterministic, auditable, and explainable: ingestion writes DuckDB staging tables and Parquet, validation emits structured issue logs, scoring lives in YAML-backed weights/severities, and the artefacts drive both automated histories and a polished scorecard.
 
-## Project goals for Phase 0
-1. **Establish single source-of-truth configs** for schema contracts (columns/types/keys) and validation rules grouped by soundness dimensions.
-2. **Document the scoring model** so it can be explained in under two minutes and updated without touching Python.
-3. **Plan the delivery surface**: GitHub Pages for the public scorecard and Streamlit Community Cloud for the CSV upload validator.
+## Live experiences
+- **Latest scorecard (GitHub Pages):** `https://josuejero.github.io/DQSentry/` keeps the newest run rendered via `reports/latest/` and published through `.github/workflows/pages.yml`.
+- **CSV validator (Streamlit):** `https://dqsentry.streamlit.app/` lets anyone upload the five DQSentry exports (`districts`, `users`, `resources`, `events`, `newsletter`), runs the ingest→validation→score cycle in an isolated temp workspace, and surfaces downloads of cleansed tables, issue logs, and exception reports.
 
-## Architecture highlights
-- **Storage/engine:** DuckDB reads CSV exports, writes Parquet to `data/staging/`, and keeps audit marts in `data/marts/`.
-- **Validation:** Great Expectations suites live under `dq/ge/` and are driven by the YAML rules in `dq/config/`.
-- **Orchestration:** Python scripts in `scripts/` (ingest, profile, validate, score, publish, run_all) plus `Makefile` and GitHub Actions under `.github/workflows/` will be wired in later phases.
-- **Publishing:** Static HTML scorecards land in `reports/latest/` and per-run artifacts in `reports/runs/` for historical tracking.
+## Directory & artefact layout
+- `data/raw/<dataset>/<seed>` – source CSV/metadata exports. Never mutate these files; ingestion copies them into staging.
+- `data/staging/<dataset>/<seed>` – DuckDB database (`staging.duckdb`), Parquet dumps, and metadata (`run_metadata.json`, `ingest_metadata.json`).
+- `data/marts/` – persistence layers for checks (`dq_check_results`), issues (`dq_issue_log`, `dq_issue_history`, `dq_issue_recurrence`), run history, metrics/anomalies, schema drift, and score history.
+- `dq/` – validation/domain logic (config, Great Expectations artifacts, anomaly/drift detectors) plus the Streamlit UI surface and regression data.
+- `scripts/` – CLI entry points for ingestion, profiling, validation, scoring, publication, quality gate enforcement, regression, and reusable helpers.
+- `reports/` – Jinja scorecard template (`templates/scorecard.html.jinja`), the `latest/` front door for GH Pages, and per-run archives under `runs/run_id=<id>`.
+- `docs/operational-guide.md` – maintained companion documentation summarizing the operational workflow, artefacts, and automation.
 
-## Demo links (Phase 0 placeholders)
-- Public scorecard: GitHub Pages (e.g., `https://<org>.github.io/DQSentry/latest-scorecard/`).
-- Interactive validator: Streamlit Community Cloud app (CSV upload → score + downloads).
+## Getting started locally
+1. `make setup` – boots a virtualenv (`.venv` or `.venv311`), upgrades `pip`, installs dependencies (PyArrow needs `cmake` so install it first if missing), and prepares the tooling.
+2. `make sample` – generates deterministic Phase 1 exports via `tools/generate_synthetic.py` (or drop your own exports into `data/raw/<dataset>/<seed>`).
+3. `make ingest` – copies CSVs into staging, canonicalizes values, writes DuckDB/Parquet, and persists metadata.
+4. `make profile` – collects column statistics, writes profile Parquet artifacts, and drops `reports/runs/run_id=<id>/profile.html` for quick reviews.
+5. `make validate` – runs `scripts/validate_runner.py`, then `scripts/score.py` to compute scores, issue previews, and writes `reports/latest/score.json` + `issues.csv`.
+6. `make report` – renders the scorecard via `scripts/publish.py`, updates `reports/latest/index.html`, and archives the run under `reports/runs/run_id=<id>`.
+7. `make run` – convenience target that executes sample generation, ingest, profile, validate, and report in sequence.
 
-## Scoring model (explainable and stable)
-1. Each validation check returns a `failure_rate` between 0 (clean) and 1 (all rows fail).
-2. Each check defines:
-   - A **severity** (1=notice, 5=critical).
-   - A **weight** to reflect relative importance when computing penalties.
-3. **Penalty per check**: `failure_rate * (severity / 5) * weight` so every penalty already sits in `[0, weight]` and scales with severity.
-4. **Aggregate penalty**: sum all check penalties, normalize by the total possible weight (sum of all `weight` values across active checks).
-5. **Overall score**: `max(0, 100 - 100 * normalized_penalty_sum)`; baseline is 100 when there are zero failures.
-6. **Sub-scores**: repeat the same calculation within each dimension (completeness, validity, consistency, uniqueness, integrity) by summing only the checks that belong there.
+Run overrides: prepend `DATASET=<name> SEED=<seed>` to any `make` command or use the scripts directly (e.g., `python scripts/ingest.py --dataset-name custom --seed 7 --force`). Use `scripts/get_run_id.py --stage-path ...` when downstream commands need the run identifier.
 
-## How to run (future work)
-- `scripts/ingest.py` will copy `data/raw/*` into typed Parquet under `data/staging/`.
-- `scripts/validate.py` will run Great Expectations suites backed by `dq/config/rules.yml` and write failure rates to `data/marts/`.
-- `scripts/score.py` will apply the scoring formula above and emit human-friendly scorecards and issue logs in `reports/latest/` plus run-specific folders under `reports/runs/`.
-- GitHub Actions `dq_push.yml` and `dq_scheduled.yml` will orchestrate CI and scheduled audits.
+## Pipeline architecture
+- **Ingestion:** `scripts/ingest.py` wraps `scripts/ingest_lib.ingest_dataset`, which applies `TABLE_SPECS`, mappings (`dq/config/mappings.yml`), custom timestamp parsing, and writes DuckDB tables + Parquet files. The ingest metadata becomes the source of truth for `run_id` and paths.
+- **Profiling:** `scripts/profile_tables.py` gathers column metrics (via `scripts/profile_collector`), records profiles in `data/marts/profiles`, and exports an HTML summary for each run.
+- **Validation & scoring:** `scripts/validate_runner.py` loads `dq/config/rules.yml`, evaluates each `CheckRule`, persists check/issue logs, updates run/issue history, triggers anomaly/drift detection, and hands off the results to `scripts/score.py`, which applies the penalty formula (`normalized_penalty = total_penalty / total_weight`, `score = max(minimum, baseline - 100 * normalized_penalty)`) and writes latest payloads plus historical snapshots.
+- **Publication:** `scripts/publish.py` uses `scripts/publish_helpers.mutate_context` to enrich template context with issue trends, recurrence tables, and totals, renders `reports/templates/scorecard.html.jinja`, writes `reports/latest/index.html`, and archives the artifacts per run.
+- **Gating & automation:** GitHub Actions pipelines (`.github/workflows/dq_push.yml` for pushes/PRs and `.github/workflows/dq_scheduled.yml` for nightly runs) orchestrate synthetic data generation, ingest → validate → score → publish, enforce `scripts/quality_gate.py` (default score ≥ 90 and no severity ≥ 5 failures), upload artifacts, and optionally publish to `gh-pages`.
+- **Streamlit validator:** `dq/app/ui.py` powers the CSV validator via `dq/app/processing.run_validation_pipeline`, which stages uploads, runs the same ingest/validation pipeline, and returns downloads (cleaned dataset ZIP, issues CSV, exceptions CSV) plus score metrics.
 
-## Run expectations
-- Never mutate files in `data/raw/`; all cleansed outputs land in `data/staging/`.
-- Each run captures a `run_id` and timestamp, stored alongside generated artifacts.
-- Detection is separate from remediation: the toolkit flags issues but explicit cleaning steps log fixes to `data/staging/` or a dedicated `marts/fixes/` table.
+## Documentation & exploration
+- `docs/operational-guide.md` (this repository) summarizes live URLs, pipeline components, directories, automation, testing guidance, and extension points.
+- Explore `reports/runs/run_id=<id>/` after each run for archived scorecards, issue logs, and the profile report.
 
-## Streamlit CSV validator
-Use the new Streamlit app under `dq/app/app.py` when you want to upload CSV exports and immediately see the scorecard, issue log, and downloadable artifacts without running the full pipeline locally.
+## Testing & regression
+- `python scripts/regression.py` uses `dq/regression/golden_dataset.zip` and `dq/regression/golden_expected.json` to guard scoring changes; rerun after modifying rules, weights, or thresholds (`--update-expected` refreshes the baseline when intentional).
+- Streamlit validator keeps uploads isolated, so you can experiment without touching the tracked data mart.
 
-### Local run
-1. `pip install -r requirements.txt`
-2. `streamlit run dq/app/app.py`
-3. Pick the built-in Phase 1 synthetic sample or upload your own CSV(s) / ZIP bundle containing `districts.csv`, `users.csv`, `resources.csv`, `events.csv`, and `newsletter.csv`.
-
-### Deployment
-- Point Streamlit Community Cloud to this repository and use `dq/app/app.py` as the entry file.
-- The app stages uploads in an isolated temp directory, runs the ingest+validation helpers, and surfaces downloads so the Streamlit surface can stay responsive for strangers sharing their own CSVs.
-
-### Sample dataset
-The sample bundle sits at `dq/app/assets/sample_dataset.zip`; it mirrors the standard `data/raw/phase1/42` exports (including `run_metadata.json`) so you can demo the app without supplying your own files.
+## Quick links
+- Scorecard: `https://josuejero.github.io/DQSentry/`
+- CSV validator: `https://dqsentry.streamlit.app/`
+- Operational guide: `docs/operational-guide.md`

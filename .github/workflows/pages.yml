@@ -2,7 +2,7 @@ name: Build + Deploy DQSentry Scorecard
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
   workflow_dispatch:
   schedule:
     # Daily at 07:00 UTC (cron is UTC)

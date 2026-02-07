@@ -1,6 +1,12 @@
-PYTHON3_11_AVAILABLE := $(shell command -v python3.11 >/dev/null 2>&1 && echo yes)
-PYTHON ?= $(if $(PYTHON3_11_AVAILABLE),python3.11,python3)
-DEFAULT_VENV := $(if $(PYTHON3_11_AVAILABLE),.venv311,.venv)
+PYTHON_CANDIDATES := python3.13 python3.12 python3.11 python3.10 python3.9 python3
+PYTHON := $(shell for candidate in $(PYTHON_CANDIDATES); do \
+		if command -v $$candidate >/dev/null 2>&1; then \
+			echo $$candidate; \
+			break; \
+		fi; \
+	done)
+PYTHON ?= python3
+DEFAULT_VENV := .venv
 ifeq ($(origin VENV), undefined)
 VENV := $(DEFAULT_VENV)
 endif
@@ -22,9 +28,9 @@ INGEST_FORCE_FLAG = $(if $(filter 1,$(INGEST_FORCE)),--force,)
 
 RUN_ID_FROM_STAGE = $(PYTHON_BIN) scripts/get_run_id.py --stage-path "$(STAGE_DIR)"
 
-.PHONY: setup sample ingest profile validate validate-only report run ensure-cmake
+.PHONY: setup sample ingest profile validate validate-only report run ensure-python ensure-cmake
 
-setup: ensure-cmake
+setup: ensure-python ensure-cmake
 	$(PYTHON) -m venv $(VENV)
 	$(PIP_BIN) install --upgrade pip setuptools wheel
 	PATH=$(VENV)/bin:$$PATH \
@@ -41,6 +47,9 @@ ensure-cmake:
 		echo "cmake is required to build pyarrow. Install it (e.g. 'brew install cmake' on macOS) and rerun 'make setup'."; \
 		exit 1; \
 	fi
+
+ensure-python:
+	$(PYTHON) scripts/ensure_python_version.py
 
 sample:
 	$(PYTHON_BIN) tools/generate_synthetic.py --dataset-name $(DATASET) --seed $(SEED) $(SAMPLE_FORCE_FLAG)

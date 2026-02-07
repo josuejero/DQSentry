@@ -37,7 +37,7 @@ DQSentry codifies a full data-quality playbook in Python, DuckDB, and YAML so th
 - `scripts/regression.py` reruns the pipeline against `dq/regression/golden_dataset.zip` and compares the score, issue counts, and subscores to `dq/regression/golden_expected.json`. Use `--update-expected` when intentional changes modify the golden baseline.
 
 ## Running locally
-1. `make setup` – creates the virtual environment (`.venv` or `.venv311`), upgrades `pip`, installs dependencies from `requirements.txt`, and ensures `cmake` is available (needed for `pyarrow`).
+1. `make setup` – creates the virtual environment (`.venv`), upgrades `pip`, installs dependencies from `requirements.txt`, and ensures `cmake` is available (needed for `pyarrow`). This target runs `scripts/ensure_python_version.py` first to enforce CPython 3.9–3.13 (PyArrow 18 only ships wheels for those releases), so install a compatible interpreter if your system Python is newer.
 2. `make sample` – populates `data/raw/phase1/<seed>` via `tools/generate_synthetic.py`. Skip if you have your own exports.
 3. `make ingest` – copies `data/raw/<dataset>/<seed>` into `data/staging/<dataset>/<seed>`, writing DuckDB/Parquet artifacts. Use `DATASET`/`SEED` overrides or set environment variables (the defaults target `phase1/42`).
 4. `make profile` – reads staging tables, emits profile artifacts, and drops an HTML summary in `reports/runs/run_id=<id>/profile.html`.
@@ -46,6 +46,7 @@ DQSentry codifies a full data-quality playbook in Python, DuckDB, and YAML so th
 7. `make run` – shorthand for `sample`, `ingest`, `profile`, `validate`, `report` in sequence.
 
 Override staging, run IDs, or dataset names by passing `DATASET=name SEED=99` before the `make` command, or run the scripts directly (e.g., `python scripts/ingest.py --dataset-name custom --seed 7 --force`). Use `scripts/get_run_id.py --stage-path data/staging/...` when you need the run identifier for downstream commands.
+> **Python compatibility:** `scripts/ensure_python_version.py` can be executed manually to confirm your interpreter. PyArrow 18 publishes wheels for CPython 3.9–3.13 only, so if your global `python3` is 3.14+ install a supported release (e.g., `pyenv install 3.13.6`) and rerun `make setup` (prepend `PYTHON=python3.13` if needed).
 
 ## Artifacts & monitoring
 - `reports/latest/index.html` – scoreboard consumed by GH Pages.

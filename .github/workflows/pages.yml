@@ -1,0 +1,51 @@
+name: Build + Deploy DQSentry Scorecard
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+  schedule:
+    # Daily at 07:00 UTC (cron is UTC)
+    - cron: "0 7 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install deps
+        run: |
+          python -m pip install -U pip
+          pip install -r requirements.txt
+
+      - name: Run pipeline + build site
+        run: |
+          make run
+          make report
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: reports/latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

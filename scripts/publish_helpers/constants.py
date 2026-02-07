@@ -16,6 +16,9 @@ ISSUE_HISTORY_PATH = DATA_MARTS_BASE / "dq_issue_history" / "issue_history.parqu
 SVG_WIDTH = 900
 SVG_HEIGHT = 320
 SVG_MARGIN = 50
+X_AXIS_LABEL_OFFSET = 20
+X_AXIS_LABEL_ROTATION = -45
+MAX_RUN_LABELS = 12
 CHART_COLORS = [
     "#1f77b4",
     "#ff7f0e",

@@ -4,16 +4,19 @@ from __future__ import annotations
 
 from typing import Any
 
+import math
 import pandas as pd
-
 from dq.validate.output import compute_recurrence_metrics
 
 from .constants import (
     CHART_COLORS,
     ISSUE_HISTORY_PATH,
+    MAX_RUN_LABELS,
     SVG_HEIGHT,
     SVG_MARGIN,
     SVG_WIDTH,
+    X_AXIS_LABEL_OFFSET,
+    X_AXIS_LABEL_ROTATION,
 )
 
 
@@ -54,10 +57,15 @@ def build_trend_chart(history: pd.DataFrame) -> tuple[str, list[dict[str, str]]]
     working["issue_type"] = working["issue_type"].fillna("Unknown")
     working["run_ts_parsed"] = pd.to_datetime(working["run_ts"], errors="coerce")
     working["run_ts_parsed"] = working["run_ts_parsed"].fillna(pd.Timestamp("1970-01-01"))
+    working["run_id"] = working["run_id"].fillna("unknown-run")
+    working["run_event_id"] = (
+        working["run_id"].astype(str) + "|" + working["run_ts_parsed"].astype(str)
+    )
     runs = (
-        working[["run_id", "run_ts_parsed"]]
-        .drop_duplicates(subset="run_id")
+        working[["run_event_id", "run_id", "run_ts_parsed"]]
+        .drop_duplicates()
         .sort_values("run_ts_parsed")
+        .reset_index(drop=True)
     )
     if runs.empty:
         return (
@@ -65,7 +73,7 @@ def build_trend_chart(history: pd.DataFrame) -> tuple[str, list[dict[str, str]]]
             [],
         )
     counts = (
-        working.groupby(["run_id", "issue_type"], dropna=False)
+        working.groupby(["run_event_id", "issue_type"], dropna=False)
         .size()
         .reset_index(name="count")
     )
@@ -76,9 +84,9 @@ def build_trend_chart(history: pd.DataFrame) -> tuple[str, list[dict[str, str]]]
             [],
         )
     top_types = totals.head(len(CHART_COLORS)).index.tolist()
-    run_ids = runs["run_id"].tolist()
+    run_keys = runs["run_event_id"].tolist()
     count_map = {
-        (row["run_id"], row["issue_type"]): int(row["count"])
+        (row["run_event_id"], row["issue_type"]): int(row["count"])
         for _, row in counts.iterrows()
     }
 
@@ -88,18 +96,18 @@ def build_trend_chart(history: pd.DataFrame) -> tuple[str, list[dict[str, str]]]
 
     max_value = max(
         (
-            count_map.get((run_id, issue_type), 0)
-            for run_id in run_ids
+            count_map.get((run_key, issue_type), 0)
+            for run_key in run_keys
             for issue_type in top_types
         ),
         default=0,
     )
     max_value = max(max_value, 1)
-    if len(run_ids) == 1:
+    if len(run_keys) == 1:
         x_positions = [SVG_WIDTH / 2]
     else:
-        step = (SVG_WIDTH - SVG_MARGIN * 2) / (len(run_ids) - 1)
-        x_positions = [SVG_MARGIN + idx * step for idx in range(len(run_ids))]
+        step = (SVG_WIDTH - SVG_MARGIN * 2) / (len(run_keys) - 1)
+        x_positions = [SVG_MARGIN + idx * step for idx in range(len(run_keys))]
 
     axis_lines = [
         f'<line x1="{SVG_MARGIN}" y1="{SVG_MARGIN}" x2="{SVG_MARGIN}" y2="{SVG_HEIGHT - SVG_MARGIN}" stroke="#333" stroke-width="1.2"/>',
@@ -121,7 +129,7 @@ def build_trend_chart(history: pd.DataFrame) -> tuple[str, list[dict[str, str]]]
     legend: list[dict[str, str]] = []
     for series_idx, issue_type in enumerate(top_types):
         values = [
-            count_map.get((run_id, issue_type), 0) for run_id in run_ids
+            count_map.get((run_key, issue_type), 0) for run_key in run_keys
         ]
         color = CHART_COLORS[series_idx % len(CHART_COLORS)]
         legend.append({"label": issue_type, "color": color})
@@ -133,13 +141,43 @@ def build_trend_chart(history: pd.DataFrame) -> tuple[str, list[dict[str, str]]]
             f'<polyline fill="none" stroke="{color}" stroke-width="2" points="{points}" />'
         )
 
+    run_index = runs.set_index("run_event_id")
+    include_run_id_label = run_index["run_id"].nunique() > 1
+
+    label_stride = 1
+    if len(run_keys) > MAX_RUN_LABELS and MAX_RUN_LABELS > 0:
+        label_stride = math.ceil(len(run_keys) / MAX_RUN_LABELS)
+    label_y = SVG_HEIGHT - SVG_MARGIN + X_AXIS_LABEL_OFFSET
+
     x_labels: list[str] = []
-    for idx, run_id in enumerate(run_ids):
-        label_ts = runs.loc[runs["run_id"] == run_id, "run_ts_parsed"].iloc[0]
-        label = f"{run_id} · {label_ts.strftime('%Y-%m-%d')}"
+    for idx, run_key in enumerate(run_keys):
+        if len(run_keys) > MAX_RUN_LABELS and idx % label_stride != 0 and idx != len(run_keys) - 1:
+            continue
+        row = run_index.loc[run_key]
+        label_ts = row["run_ts_parsed"]
+        label_run_id = row["run_id"]
+        if pd.isna(label_ts):
+            formatted_ts = "Unknown run time"
+        else:
+            formatted_ts = label_ts.strftime("%Y-%m-%d %H:%M")
+        if include_run_id_label:
+            label = f"{label_run_id} · {formatted_ts}"
+        else:
+            label = formatted_ts
         x = x_positions[idx]
+        if X_AXIS_LABEL_ROTATION < 0:
+            text_anchor = "end"
+        elif X_AXIS_LABEL_ROTATION > 0:
+            text_anchor = "start"
+        else:
+            text_anchor = "middle"
+        rotation_attr = (
+            f' transform="rotate({X_AXIS_LABEL_ROTATION} {x:.1f} {label_y:.1f})"'
+            if X_AXIS_LABEL_ROTATION != 0
+            else ""
+        )
         x_labels.append(
-            f'<text x="{x:.1f}" y="{SVG_HEIGHT - SVG_MARGIN + 20}" text-anchor="middle">{label}</text>'
+            f'<text x="{x:.1f}" y="{label_y:.1f}" text-anchor="{text_anchor}"{rotation_attr}>{label}</text>'
         )
 
     chart_elements = "\n".join(grid_lines + axis_lines + y_labels + polylines + x_labels)

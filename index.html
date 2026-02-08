@@ -199,8 +199,8 @@
       <span class="badge">Latest run</span>
       <h1>DQ Scorecard</h1>
       <p class="meta">
-        Dataset phase1 · Run b1147866-2eff-5a6f-9420-731f44085674 · 2026-02-07T23:35:20.759063+00:00
-        · Generated at 2026-02-07T23:35:21.908334+00:00
+        Dataset phase1 · Run ecb26d74-5b78-5ec9-a5f7-620407ec1ef0 · 2026-02-08T05:24:57.240180+00:00
+        · Generated at 2026-02-08T05:24:58.305485+00:00
       </p>
       <div class="score-box">
         <span class="score-value">98.2</span>
@@ -629,10 +629,9 @@
 <text x="40" y="164.0" text-anchor="end">2</text>
 <text x="40" y="109.0" text-anchor="end">2</text>
 <text x="40" y="54.0" text-anchor="end">3</text>
-<polyline fill="none" stroke="#1f77b4" stroke-width="2" points="50.0,50.0 850.0,50.0" />
-<polyline fill="none" stroke="#ff7f0e" stroke-width="2" points="50.0,123.3 850.0,123.3" />
-<text x="50.0" y="290.0" text-anchor="end" transform="rotate(-45 50.0 290.0)">b1147866-2eff-5a6f-9420-731f44085674 · 2026-02-07 23:35</text>
-<text x="850.0" y="290.0" text-anchor="end" transform="rotate(-45 850.0 290.0)">f8d44371-2f34-57b6-ae7c-190fff0bfd55 · 2026-02-07 23:35</text></svg>
+<polyline fill="none" stroke="#1f77b4" stroke-width="2" points="450.0,50.0" />
+<polyline fill="none" stroke="#ff7f0e" stroke-width="2" points="450.0,123.3" />
+<text x="450.0" y="290.0" text-anchor="end" transform="rotate(-45 450.0 290.0)">2026-02-08 05:24</text></svg>
       </div>
       
       <div class="chart-legend">
@@ -652,9 +651,9 @@
       
       <ul class="issue-totals">
         
-        <li>duplicate: 6</li>
+        <li>duplicate: 3</li>
         
-        <li>missing: 4</li>
+        <li>missing: 2</li>
         
       </ul>
       
@@ -683,9 +682,9 @@
             <td>resources_resource_id_unique</td>
             <td>resources</td>
             <td>duplicate</td>
-            <td>2</td>
+            <td>1</td>
             <td>0.167</td>
-            <td>2026-02-07T23:35:25.662594+00:00</td>
+            <td>2026-02-08T05:24:57.240180+00:00</td>
             <td>Resource IDs must stay unique inside the catalog.</td>
             <td>Enforce DUPLICATE_PERCENTAGE for resources</td>
           </tr>
@@ -694,9 +693,9 @@
             <td>users_district_id_not_null</td>
             <td>users</td>
             <td>missing</td>
-            <td>2</td>
+            <td>1</td>
             <td>0.125</td>
-            <td>2026-02-07T23:35:25.662594+00:00</td>
+            <td>2026-02-08T05:24:57.240180+00:00</td>
             <td>Upstream export omitted district join</td>
             <td>Add district_id to export template and enforce ingestion join</td>
           </tr>
@@ -705,9 +704,9 @@
             <td>users_email_not_null</td>
             <td>users</td>
             <td>missing</td>
-            <td>2</td>
+            <td>1</td>
             <td>0.125</td>
-            <td>2026-02-07T23:35:25.662594+00:00</td>
+            <td>2026-02-08T05:24:57.240180+00:00</td>
             <td>CRM export allows blank email when contact is incomplete</td>
             <td>Add validation on source and require email before export</td>
           </tr>
@@ -716,9 +715,9 @@
             <td>users_email_org_unique</td>
             <td>users</td>
             <td>duplicate</td>
-            <td>2</td>
+            <td>1</td>
             <td>0.125</td>
-            <td>2026-02-07T23:35:25.662594+00:00</td>
+            <td>2026-02-08T05:24:57.240180+00:00</td>
             <td>The (email, org) compound key should dedupe duplicates.</td>
             <td>Enforce DUPLICATE_PERCENTAGE for users</td>
           </tr>
@@ -727,9 +726,9 @@
             <td>users_email_unique</td>
             <td>users</td>
             <td>duplicate</td>
-            <td>2</td>
+            <td>1</td>
             <td>0.125</td>
-            <td>2026-02-07T23:35:25.662594+00:00</td>
+            <td>2026-02-08T05:24:57.240180+00:00</td>
             <td>Email should uniquely identify CRM records.</td>
             <td>Enforce DUPLICATE_PERCENTAGE for users</td>
           </tr>

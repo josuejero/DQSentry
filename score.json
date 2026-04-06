@@ -1,6 +1,6 @@
 {
-  "run_id": "5aa4b442-9ea6-518c-801d-cda784a2a0bd",
-  "run_ts": "2026-04-05T05:45:40.096236+00:00",
+  "run_id": "47563c89-3c9b-5d2b-9faf-807173b9cb53",
+  "run_ts": "2026-04-06T06:00:29.646136+00:00",
   "dataset_name": "phase1",
   "score": 98.22,
   "baseline": 100.0,
@@ -400,7 +400,7 @@
   ],
   "issue_preview": [
     {
-      "run_id": "5aa4b442-9ea6-518c-801d-cda784a2a0bd",
+      "run_id": "47563c89-3c9b-5d2b-9faf-807173b9cb53",
       "table_name": "resources",
       "check_name": "resources_resource_id_unique",
       "issue_type": "duplicate",
@@ -410,7 +410,7 @@
       "recommended_fix": "Enforce DUPLICATE_PERCENTAGE for resources"
     },
     {
-      "run_id": "5aa4b442-9ea6-518c-801d-cda784a2a0bd",
+      "run_id": "47563c89-3c9b-5d2b-9faf-807173b9cb53",
       "table_name": "users",
       "check_name": "users_email_unique",
       "issue_type": "duplicate",
@@ -420,7 +420,7 @@
       "recommended_fix": "Enforce DUPLICATE_PERCENTAGE for users"
     },
     {
-      "run_id": "5aa4b442-9ea6-518c-801d-cda784a2a0bd",
+      "run_id": "47563c89-3c9b-5d2b-9faf-807173b9cb53",
       "table_name": "users",
       "check_name": "users_email_not_null",
       "issue_type": "missing",
@@ -430,7 +430,7 @@
       "recommended_fix": "Add validation on source and require email before export"
     },
     {
-      "run_id": "5aa4b442-9ea6-518c-801d-cda784a2a0bd",
+      "run_id": "47563c89-3c9b-5d2b-9faf-807173b9cb53",
       "table_name": "users",
       "check_name": "users_email_org_unique",
       "issue_type": "duplicate",
@@ -440,7 +440,7 @@
       "recommended_fix": "Enforce DUPLICATE_PERCENTAGE for users"
     },
     {
-      "run_id": "5aa4b442-9ea6-518c-801d-cda784a2a0bd",
+      "run_id": "47563c89-3c9b-5d2b-9faf-807173b9cb53",
       "table_name": "users",
       "check_name": "users_district_id_not_null",
       "issue_type": "missing",
@@ -450,5 +450,5 @@
       "recommended_fix": "Add district_id to export template and enforce ingestion join"
     }
   ],
-  "generated_at": "2026-04-05T05:45:41.231487+00:00"
+  "generated_at": "2026-04-06T06:00:30.740536+00:00"
 }

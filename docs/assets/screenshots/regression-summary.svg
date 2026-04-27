@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="720" viewBox="0 0 1160 720" role="img" aria-label="Golden dataset scoring guardrail screenshot proof">
+  <rect width="1160" height="720" rx="18" fill="#f8fafc"/>
+  <rect x="28" y="28" width="1104" height="664" rx="16" fill="#ffffff" stroke="#dbe3ef"/>
+  <rect x="56" y="56" width="160" height="12" rx="6" fill="#7c3aed"/>
+  <text x="56" y="104" font-size="20" font-family="Arial, sans-serif" fill="#7c3aed" font-weight="700">REGRESSION PROOF</text>
+  <text x="56" y="142" font-size="34" font-family="Arial, sans-serif" fill="#0f172a" font-weight="700">Golden dataset scoring guardrail</text>
+  <rect x="56" y="120" width="1048" height="38" rx="8" fill="#ffffff" stroke="#dbe3ef"/><text x="76" y="144" font-size="20" fill="#475569">python scripts/regression.py</text>
+  <rect x="56" y="172" width="1048" height="38" rx="8" fill="#ffffff" stroke="#dbe3ef"/><text x="76" y="196" font-size="20" fill="#475569">dq/regression/golden_dataset.zip</text>
+  <rect x="56" y="224" width="1048" height="38" rx="8" fill="#ffffff" stroke="#dbe3ef"/><text x="76" y="248" font-size="20" fill="#475569">dq/regression/golden_expected.json</text>
+  <rect x="56" y="276" width="1048" height="38" rx="8" fill="#ffffff" stroke="#dbe3ef"/><text x="76" y="300" font-size="20" fill="#475569">Protects scoring and YAML-rule changes from drift</text>
+  <rect x="56" y="636" width="1048" height="24" rx="12" fill="#e2e8f0"/>
+  <rect x="56" y="636" width="780" height="24" rx="12" fill="#7c3aed"/>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="720" viewBox="0 0 1160 720" role="img" aria-label="issues.csv + score.json outputs screenshot proof">
+  <rect width="1160" height="720" rx="18" fill="#f8fafc"/>
+  <rect x="28" y="28" width="1104" height="664" rx="16" fill="#ffffff" stroke="#dbe3ef"/>
+  <rect x="56" y="56" width="160" height="12" rx="6" fill="#0f766e"/>
+  <text x="56" y="104" font-size="20" font-family="Arial, sans-serif" fill="#0f766e" font-weight="700">DQSENTRY ARTIFACTS</text>
+  <text x="56" y="142" font-size="34" font-family="Arial, sans-serif" fill="#0f172a" font-weight="700">issues.csv + score.json outputs</text>
+  <rect x="56" y="120" width="1048" height="38" rx="8" fill="#ffffff" stroke="#dbe3ef"/><text x="76" y="144" font-size="20" fill="#475569">reports/latest/issues.csv: severity, rule_id, table, row_key, message</text>
+  <rect x="56" y="172" width="1048" height="38" rx="8" fill="#ffffff" stroke="#dbe3ef"/><text x="76" y="196" font-size="20" fill="#475569">reports/latest/score.json: score, gate status, issue counts, trend</text>
+  <rect x="56" y="224" width="1048" height="38" rx="8" fill="#ffffff" stroke="#dbe3ef"/><text x="76" y="248" font-size="20" fill="#475569">Pipeline path: ingest -&gt; validate -&gt; score -&gt; publish</text>
+  <rect x="56" y="276" width="1048" height="38" rx="8" fill="#ffffff" stroke="#dbe3ef"/><text x="76" y="300" font-size="20" fill="#475569">Reviewer takeaway: generated evidence is inspectable without rerunning</text>
+  <rect x="56" y="636" width="1048" height="24" rx="12" fill="#e2e8f0"/>
+  <rect x="56" y="636" width="780" height="24" rx="12" fill="#0f766e"/>
+</svg>

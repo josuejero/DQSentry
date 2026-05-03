@@ -28,7 +28,7 @@ INGEST_FORCE_FLAG = $(if $(filter 1,$(INGEST_FORCE)),--force,)
 
 RUN_ID_FROM_STAGE = $(PYTHON_BIN) scripts/get_run_id.py --stage-path "$(STAGE_DIR)"
 
-.PHONY: setup sample ingest profile validate validate-only report run ensure-python ensure-cmake
+.PHONY: setup sample ingest profile validate validate-only report metrics metrics-pre-report metrics-post-report issue-lifecycle run test coverage security-local ensure-python ensure-cmake
 
 setup: ensure-python ensure-cmake
 	$(PYTHON) -m venv $(VENV)
@@ -72,9 +72,40 @@ validate-only:
 
 report:
 	@if [ ! -f "$(SCORE_JSON)" ]; then \
-		echo "Score payload not found at $(SCORE_JSON). Run `make validate` first."; exit 1; \
+		echo "Score payload not found at $(SCORE_JSON). Run make validate first."; exit 1; \
 	fi
 	@RUN_ID=$$($(RUN_ID_FROM_STAGE)); \
 	$(PYTHON_BIN) scripts/publish.py --run-id $$RUN_ID
 
-run: sample ingest profile validate-only report
+issue-lifecycle:
+	$(PYTHON_BIN) scripts/issue_lifecycle.py
+
+metrics-pre-report: issue-lifecycle
+	@if [ ! -f "$(SCORE_JSON)" ]; then \
+		echo "Score payload not found at $(SCORE_JSON). Run make validate first."; exit 1; \
+	fi
+	@RUN_ID=$$($(RUN_ID_FROM_STAGE)); \
+	$(PYTHON_BIN) scripts/collect_project_metrics.py --run-id $$RUN_ID --write-history
+
+metrics-post-report: issue-lifecycle
+	@if [ ! -f "$(SCORE_JSON)" ]; then \
+		echo "Score payload not found at $(SCORE_JSON). Run make validate first."; exit 1; \
+	fi
+	@RUN_ID=$$($(RUN_ID_FROM_STAGE)); \
+	$(PYTHON_BIN) scripts/collect_project_metrics.py --run-id $$RUN_ID --write-history
+
+metrics: metrics-post-report
+
+test:
+	$(PYTHON_BIN) -m pytest
+
+coverage:
+	mkdir -p reports/latest
+	$(PYTHON_BIN) -m pytest --cov=dq --cov=scripts --cov=tools --cov-branch --cov-report=term-missing --cov-report=json:reports/latest/coverage.json --cov-report=xml:reports/latest/coverage.xml --cov-report=html:reports/latest/htmlcov
+	$(PYTHON_BIN) scripts/coverage_summary.py
+
+security-local:
+	mkdir -p reports/latest/security
+	$(PYTHON_BIN) scripts/security_summary.py
+
+run: sample ingest profile validate-only metrics-pre-report report metrics-post-report

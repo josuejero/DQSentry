@@ -1,0 +1,95 @@
+name: Security Checks
+
+on:
+  pull_request:
+    branches: ["master"]
+  push:
+    branches: ["master"]
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 9 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dependency review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+
+  security-artifacts:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: requirements.txt
+
+      - name: Install project dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Prepare security directory
+        run: mkdir -p reports/latest/security
+
+      - name: Install SBOM tool
+        continue-on-error: true
+        run: python -m pip install "cyclonedx-bom>=4,<7"
+
+      - name: Generate Python SBOM
+        continue-on-error: true
+        run: |
+          cyclonedx-py requirements \
+            --output-format JSON \
+            --output-file reports/latest/security/bom.json \
+            requirements.txt
+
+      - name: Run Gitleaks
+        continue-on-error: true
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/repo" \
+            ghcr.io/gitleaks/gitleaks:latest \
+            dir /repo \
+            --report-format json \
+            --report-path /repo/reports/latest/security/gitleaks.json \
+            --exit-code 0 \
+            --no-banner \
+            --redact
+
+      - name: Run OpenSSF Scorecard
+        continue-on-error: true
+        uses: ossf/scorecard-action@v2.4.3
+        with:
+          results_file: reports/latest/security/openssf-scorecard.json
+          results_format: json
+          publish_results: false
+
+      - name: Summarize security artifacts
+        if: always()
+        run: python scripts/security_summary.py
+
+      - name: Upload security artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dqsentry-security-artifacts
+          path: reports/latest/security

@@ -225,6 +225,66 @@
       </div>
     </section>
 
+    {% if project_metrics %}
+    <section>
+      <h2>Project metrics</h2>
+      <p class="section-note">
+        Employer-facing summary of validation coverage, quality gating, regression safety, and published artifacts.
+      </p>
+      <div class="grid">
+        <article>
+          <h3>Quality gate</h3>
+          <strong>{{ project_metrics.quality_gate_status | title }}</strong>
+          <span class="section-note">Score threshold {{ project_metrics.score_threshold }}</span>
+        </article>
+        <article>
+          <h3>Critical failures</h3>
+          <strong>{{ project_metrics.critical_failed_checks }}</strong>
+          <span class="section-note">Severity-gated checks</span>
+        </article>
+        <article>
+          <h3>Check pass rate</h3>
+          <strong>{{ (project_metrics.check_pass_rate * 100) | round(1) }}%</strong>
+          <span class="section-note">Passed checks / total checks</span>
+        </article>
+        <article>
+          <h3>Root-cause coverage</h3>
+          <strong>{{ (project_metrics.issue_root_cause_coverage_pct * 100) | round(1) }}%</strong>
+          <span class="section-note">Issues with fix guidance</span>
+        </article>
+        <article>
+          <h3>Open issues</h3>
+          <strong>{{ project_metrics.open_issue_count }}</strong>
+          <span class="section-note">{{ project_metrics.new_issue_count }} new · {{ project_metrics.recurring_issue_count }} recurring</span>
+        </article>
+        <article>
+          <h3>Regression</h3>
+          <strong>{{ project_metrics.get('regression', {}).get('status', 'Not recorded') | title }}</strong>
+          <span class="section-note">Golden dataset baseline</span>
+        </article>
+        <article>
+          <h3>Line coverage</h3>
+          <strong>{{ project_metrics.get('coverage', {}).get('line_coverage_pct', 'N/A') }}</strong>
+          <span class="section-note">pytest-cov summary</span>
+        </article>
+        <article>
+          <h3>Artifacts</h3>
+          <strong>{{ project_metrics.artifact_count }}</strong>
+          <span class="section-note">Published run outputs</span>
+        </article>
+        <article>
+          <h3>OpenSSF</h3>
+          <strong>{{ project_metrics.get('security', {}).get('openssf_score', 'N/A') }}</strong>
+          <span class="section-note">Security scorecard</span>
+        </article>
+      </div>
+      <p class="section-note" style="margin-top: 1rem;">
+        Downloadable summary: <a href="employer_metrics.md" download>employer_metrics.md</a> ·
+        Machine-readable metrics: <a href="project_metrics.json" download>project_metrics.json</a>
+      </p>
+    </section>
+    {% endif %}
+
     <section>
       <h2>Checks summary</h2>
       <p class="section-note">

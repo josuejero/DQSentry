@@ -69,11 +69,50 @@ jobs:
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
           python scripts/score.py --run-id "$RUN_ID"
 
+      - name: Golden dataset regression
+        run: |
+          python -m scripts.regression
+
+      - name: Test with coverage
+        run: |
+          mkdir -p reports/latest
+          python -m pytest \
+            --cov=dq \
+            --cov=scripts \
+            --cov=tools \
+            --cov-branch \
+            --cov-report=term-missing \
+            --cov-report=json:reports/latest/coverage.json \
+            --cov-report=xml:reports/latest/coverage.xml \
+            --cov-report=html:reports/latest/htmlcov
+          python scripts/coverage_summary.py
+
+      - name: Build issue lifecycle metrics
+        if: always() && steps.score.outputs.run_id != ''
+        run: |
+          python scripts/issue_lifecycle.py
+
+      - name: Collect project metrics
+        if: always() && steps.score.outputs.run_id != ''
+        run: |
+          python scripts/collect_project_metrics.py \
+            --run-id "${{ steps.score.outputs.run_id }}" \
+            --write-history
+
       - name: Build scorecard
+        if: always() && steps.score.outputs.run_id != ''
         run: |
           python scripts/publish.py --run-id "${{ steps.score.outputs.run_id }}"
 
+      - name: Refresh project metrics after scorecard
+        if: always() && steps.score.outputs.run_id != ''
+        run: |
+          python scripts/collect_project_metrics.py \
+            --run-id "${{ steps.score.outputs.run_id }}" \
+            --write-history
+
       - name: Enforce quality gate
+        if: always() && steps.score.outputs.run_id != ''
         run: |
           python scripts/quality_gate.py --run-id "${{ steps.score.outputs.run_id }}"
 
@@ -87,6 +126,8 @@ jobs:
             reports/runs/run_id=${{ steps.score.outputs.run_id }}
             data/marts/dq_check_results/run_id=${{ steps.score.outputs.run_id }}
             data/marts/dq_issue_log/run_id=${{ steps.score.outputs.run_id }}
+            data/marts/dq_issue_lifecycle
+            data/marts/project_metrics_history
 
       - name: Publish scorecard to GitHub Pages
         if: success()

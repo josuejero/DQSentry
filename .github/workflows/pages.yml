@@ -26,10 +26,9 @@ jobs:
           python -m pip install -U pip
           pip install -r requirements.txt
 
-      - name: Run pipeline + build site
+      - name: Run pipeline, metrics, and build site
         run: |
           make run
-          make report
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

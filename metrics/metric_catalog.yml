@@ -1,0 +1,180 @@
+metrics:
+  overall_score:
+    label: Overall data quality score
+    category: data_quality
+    source: reports/latest/score.json
+    formula: score
+    target: ">= 90"
+    employer_value: Shows the latest health score produced by the validation pipeline.
+    public: true
+
+  total_checks:
+    label: Automated validation checks
+    category: data_quality
+    source: reports/latest/score.json and dq/config/rules.yml
+    formula: count(check_results)
+    target: Maintain or increase only when coverage improves.
+    employer_value: Shows the breadth of automated validation coverage.
+    public: true
+
+  check_pass_rate:
+    label: Check pass rate
+    category: data_quality
+    source: data/marts/dq_check_results
+    formula: passed_checks / total_checks
+    target: ">= 95% for clean demo data"
+    employer_value: Shows the percentage of validation checks that pass.
+    public: true
+
+  failed_checks:
+    label: Failed checks
+    category: data_quality
+    source: reports/latest/score.json
+    formula: failed_checks
+    target: Context-dependent; failures should be explainable.
+    employer_value: Shows that the tool detects specific data-quality defects.
+    public: true
+
+  critical_failed_checks:
+    label: Critical failed checks
+    category: data_quality
+    source: data/marts/dq_check_results and dq/config/quality_gate.yml
+    formula: count(status == fail and severity >= critical_severity)
+    target: "0"
+    employer_value: Shows whether high-risk checks are clean.
+    public: true
+
+  quality_gate_status:
+    label: Quality gate status
+    category: automation
+    source: scripts/quality_gate.py
+    formula: pass if score >= threshold and no critical failures
+    target: pass
+    employer_value: Shows that CI can block low-quality data runs.
+    public: true
+
+  regression_status:
+    label: Golden regression status
+    category: testing
+    source: scripts/regression.py
+    formula: pass/fail comparison against dq/regression/golden_expected.json
+    target: pass
+    employer_value: Shows that scoring logic is protected against accidental drift.
+    public: true
+
+  regression_score_delta:
+    label: Regression score delta
+    category: testing
+    source: reports/latest/regression_metrics.json
+    formula: actual_score - expected_score
+    target: 0 within tolerance
+    employer_value: Shows whether scoring behavior changed unexpectedly.
+    public: true
+
+  line_coverage_pct:
+    label: Line coverage
+    category: testing
+    source: reports/latest/coverage_summary.json
+    formula: covered_lines / total_lines
+    target: Raise gradually; do not chase 100% blindly.
+    employer_value: Shows how much production code is exercised by tests.
+    public: true
+
+  branch_coverage_pct:
+    label: Branch coverage
+    category: testing
+    source: reports/latest/coverage_summary.json
+    formula: covered_branches / total_branches
+    target: Raise gradually for validation and scoring logic.
+    employer_value: Shows whether conditional logic is tested.
+    public: true
+
+  issue_root_cause_coverage_pct:
+    label: Root-cause coverage
+    category: explainability
+    source: reports/latest/issues.csv
+    formula: issues with probable_root_cause and recommended_fix / total issues
+    target: "100%"
+    employer_value: Shows that detected issues are explainable and actionable.
+    public: true
+
+  open_issue_count:
+    label: Open issue count
+    category: explainability
+    source: data/marts/dq_issue_lifecycle
+    formula: count(status == open)
+    target: Explain and reduce intentionally.
+    employer_value: Shows current unresolved data-quality issue inventory.
+    public: true
+
+  new_issue_count:
+    label: New issue count
+    category: explainability
+    source: data/marts/dq_issue_lifecycle
+    formula: count(occurrence_count == 1 and status == open)
+    target: Track before accepting recurring defects.
+    employer_value: Shows which issues appeared for the first time in the latest run.
+    public: true
+
+  recurring_issue_count:
+    label: Recurring issue count
+    category: explainability
+    source: data/marts/dq_issue_lifecycle
+    formula: count recurring open issue keys with occurrences > 1
+    target: Track and reduce intentionally.
+    employer_value: Shows that the project tracks issue history, not just one run.
+    public: true
+
+  resolved_or_not_seen_issue_count:
+    label: Resolved or not-seen issue count
+    category: explainability
+    source: data/marts/dq_issue_lifecycle
+    formula: count(status == not_seen_in_latest_run)
+    target: Increase through intentional data fixes.
+    employer_value: Shows whether previously detected issues stopped appearing.
+    public: true
+
+  artifact_count:
+    label: Published artifact count
+    category: reporting
+    source: reports/latest/artifact_manifest.json
+    formula: count artifacts where exists == true
+    target: Required artifacts present every run.
+    employer_value: Shows that the pipeline creates auditable outputs.
+    public: true
+
+  scorecard_published:
+    label: Scorecard published
+    category: reporting
+    source: reports/latest/index.html
+    formula: file exists
+    target: true
+    employer_value: Shows that project results are visible without local setup.
+    public: true
+
+  openssf_score:
+    label: OpenSSF Scorecard score
+    category: security
+    source: reports/latest/security/openssf-scorecard.json
+    formula: aggregate score from OpenSSF Scorecard
+    target: Improve over time.
+    employer_value: Shows supply-chain and repository security hygiene.
+    public: true
+
+  dependency_vulnerability_count:
+    label: Dependency vulnerability count
+    category: security
+    source: dependency review / Dependabot / security scan output
+    formula: count known dependency vulnerabilities
+    target: "0 high or critical"
+    employer_value: Shows dependency maintenance discipline.
+    public: true
+
+  sbom_generated:
+    label: SBOM generated
+    category: security
+    source: reports/latest/security/bom.json
+    formula: file exists
+    target: true
+    employer_value: Shows that dependency inventory can be inspected.
+    public: true

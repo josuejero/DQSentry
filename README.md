@@ -1,6 +1,25 @@
 # DQSentry: Data Quality Sentinel
 
+![DQ Push Pipeline](https://github.com/josuejero/DQSentry/actions/workflows/dq_push.yml/badge.svg)
+![DQ Scheduled Pipeline](https://github.com/josuejero/DQSentry/actions/workflows/dq_scheduled.yml/badge.svg)
+![Pages](https://github.com/josuejero/DQSentry/actions/workflows/pages.yml/badge.svg)
+![Security Checks](https://github.com/josuejero/DQSentry/actions/workflows/security.yml/badge.svg)
+
 DQSentry is a Python data-quality platform that turns raw CSV exports into validated, scored, and explainable datasets. It ingests data into DuckDB, writes Parquet artifacts, runs Great Expectations checks, applies YAML-driven scoring rules, and publishes a scorecard with issue history. This project demonstrates data validation, pipeline automation, regression testing, reporting, and CI/CD workflows for data engineering, analytics engineering, QA automation, and internal tooling roles.
+
+## Current project metrics
+
+| Metric | Latest value |
+|---|---:|
+| Overall data quality score | See `reports/latest/project_metrics.json` |
+| Automated validation checks | See `reports/latest/project_metrics.json` |
+| Quality gate | See `reports/latest/project_metrics.json` |
+| Critical failed checks | See `reports/latest/project_metrics.json` |
+| Regression baseline | See `reports/latest/regression_metrics.json` |
+| Coverage summary | See `reports/latest/coverage_summary.json` |
+| Published artifacts | See `reports/latest/artifact_manifest.json` |
+
+For a human-readable summary, open `reports/latest/employer_metrics.md`.
 
 ## Quick links
 - **Live demo:** [GitHub Pages scorecard](https://josuejero.github.io/DQSentry/) and [Streamlit upload validator](https://dqsentry.streamlit.app/)
@@ -71,4 +90,3 @@ Run overrides: prepend `DATASET=<name> SEED=<seed>` to any `make` command or use
 ## Testing & regression
 - `python scripts/regression.py` uses `dq/regression/golden_dataset.zip` and `dq/regression/golden_expected.json` to guard scoring changes; rerun after modifying rules, weights, or thresholds (`--update-expected` refreshes the baseline when intentional).
 - Streamlit validator keeps uploads isolated, so you can experiment without touching the tracked data mart.
-

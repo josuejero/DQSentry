@@ -4,17 +4,22 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 import zipfile
+from datetime import datetime, timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any
 
 import pandas as pd
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 from scripts.ingest_lib import ingest_dataset
 from dq.validate.runner import ValidationRunner
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DATASET_ARCHIVE = REPO_ROOT / "dq" / "regression" / "golden_dataset.zip"
 DEFAULT_EXPECTED_PATH = REPO_ROOT / "dq" / "regression" / "golden_expected.json"
 DEFAULT_DATASET_NAME = "phase1"
@@ -58,6 +63,12 @@ def main() -> None:
         action="store_true",
         help="Refresh the expected output with the current run's results.",
     )
+    parser.add_argument(
+        "--metrics-output",
+        type=Path,
+        default=REPO_ROOT / "reports" / "latest" / "regression_metrics.json",
+        help="Optional JSON path for regression metrics.",
+    )
     args = parser.parse_args()
 
     if not args.dataset_archive.exists():
@@ -71,7 +82,17 @@ def main() -> None:
         return
 
     expected = _load_expected(args.expected_path)
-    _assert_matches(actual, expected, args.tolerance)
+    metrics = _build_regression_metrics(actual, expected, args.tolerance)
+    _write_regression_metrics(metrics, args.metrics_output)
+    try:
+        _assert_matches(actual, expected, args.tolerance)
+    except SystemExit as exc:
+        metrics["status"] = "fail"
+        metrics["failure_reason"] = str(exc)
+        _write_regression_metrics(metrics, args.metrics_output)
+        raise
+    metrics["status"] = "pass"
+    _write_regression_metrics(metrics, args.metrics_output)
     print(
         "Golden dataset regression passed for run "
         f"{actual['run_id']} (score {actual['score']:.2f})."
@@ -187,6 +208,46 @@ def _assert_matches(actual: dict[str, Any], expected: dict[str, Any], tolerance:
             raise SystemExit(
                 f"Subscore mismatch for {dimension}: expected {target} vs actual {actual_value}"
             )
+
+
+def _build_regression_metrics(
+    actual: dict[str, Any], expected: dict[str, Any], tolerance: float
+) -> dict[str, Any]:
+    expected_subscores = expected.get("subscores", {})
+    actual_subscores = actual.get("subscores", {})
+    subscore_deltas = {
+        dimension: round(float(actual_subscores.get(dimension, 0.0)) - float(target), 4)
+        for dimension, target in expected_subscores.items()
+    }
+    expected_issue_counts = expected.get("issue_counts", {})
+    actual_issue_counts = actual.get("issue_counts", {})
+    issue_count_deltas = {
+        key: int(actual_issue_counts.get(key, 0)) - int(expected_issue_counts.get(key, 0))
+        for key in sorted(set(expected_issue_counts) | set(actual_issue_counts))
+    }
+    return {
+        "status": "pending",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "run_id": actual.get("run_id"),
+        "dataset_name": actual.get("dataset_name"),
+        "tolerance": tolerance,
+        "expected_score": expected.get("score"),
+        "actual_score": actual.get("score"),
+        "score_delta": round(
+            float(actual.get("score", 0.0)) - float(expected.get("score", 0.0)), 4
+        ),
+        "expected_failed_checks": expected.get("failed_checks"),
+        "actual_failed_checks": actual.get("failed_checks"),
+        "failed_check_delta": int(actual.get("failed_checks", 0))
+        - int(expected.get("failed_checks", 0)),
+        "issue_count_deltas": issue_count_deltas,
+        "subscore_deltas": subscore_deltas,
+    }
+
+
+def _write_regression_metrics(metrics: dict[str, Any], path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":

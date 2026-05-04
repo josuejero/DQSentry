@@ -11,6 +11,7 @@ from dq.validate.output import compute_recurrence_metrics
 from .constants import (
     CHART_COLORS,
     ISSUE_HISTORY_PATH,
+    LATEST_REPORT_DIR,
     MAX_RUN_LABELS,
     SVG_HEIGHT,
     SVG_MARGIN,
@@ -18,6 +19,7 @@ from .constants import (
     X_AXIS_LABEL_OFFSET,
     X_AXIS_LABEL_ROTATION,
 )
+from .io import load_optional_json
 
 
 def read_issue_history() -> pd.DataFrame:
@@ -205,4 +207,7 @@ def mutate_context(score_payload: dict[str, Any]) -> dict[str, Any]:
         if not recurrence.empty
         else [],
         "issue_totals": issue_totals,
+        "project_metrics": load_optional_json(
+            LATEST_REPORT_DIR / "project_metrics.json"
+        ),
     }

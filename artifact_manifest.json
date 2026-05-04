@@ -1,0 +1,122 @@
+[
+  {
+    "name": "scorecard_html",
+    "path": "reports/latest/index.html",
+    "exists": true,
+    "size_bytes": 21559
+  },
+  {
+    "name": "score_json",
+    "path": "reports/latest/score.json",
+    "exists": true,
+    "size_bytes": 13542
+  },
+  {
+    "name": "issues_csv",
+    "path": "reports/latest/issues.csv",
+    "exists": true,
+    "size_bytes": 2866
+  },
+  {
+    "name": "project_metrics_json",
+    "path": "reports/latest/project_metrics.json",
+    "exists": true,
+    "size_bytes": 2846
+  },
+  {
+    "name": "employer_metrics_md",
+    "path": "reports/latest/employer_metrics.md",
+    "exists": true,
+    "size_bytes": 1091
+  },
+  {
+    "name": "artifact_manifest_json",
+    "path": "reports/latest/artifact_manifest.json",
+    "exists": true,
+    "size_bytes": 3
+  },
+  {
+    "name": "coverage_summary_json",
+    "path": "reports/latest/coverage_summary.json",
+    "exists": true,
+    "size_bytes": 267
+  },
+  {
+    "name": "regression_metrics_json",
+    "path": "reports/latest/regression_metrics.json",
+    "exists": true,
+    "size_bytes": 557
+  },
+  {
+    "name": "security_summary_json",
+    "path": "reports/latest/security/security_summary.json",
+    "exists": false,
+    "size_bytes": 0
+  },
+  {
+    "name": "sbom_json",
+    "path": "reports/latest/security/bom.json",
+    "exists": false,
+    "size_bytes": 0
+  },
+  {
+    "name": "gitleaks_json",
+    "path": "reports/latest/security/gitleaks.json",
+    "exists": false,
+    "size_bytes": 0
+  },
+  {
+    "name": "openssf_scorecard_json",
+    "path": "reports/latest/security/openssf-scorecard.json",
+    "exists": false,
+    "size_bytes": 0
+  },
+  {
+    "name": "profile_html",
+    "path": "reports/runs/f6b46fd4-e455-5870-b832-5aa432cb42be/profile.html",
+    "exists": false,
+    "size_bytes": 0
+  },
+  {
+    "name": "profile_html_partitioned",
+    "path": "reports/runs/run_id=f6b46fd4-e455-5870-b832-5aa432cb42be/profile.html",
+    "exists": false,
+    "size_bytes": 0
+  },
+  {
+    "name": "archived_scorecard",
+    "path": "reports/runs/run_id=f6b46fd4-e455-5870-b832-5aa432cb42be/index.html",
+    "exists": true,
+    "size_bytes": 21559
+  },
+  {
+    "name": "archived_issues_csv",
+    "path": "reports/runs/run_id=f6b46fd4-e455-5870-b832-5aa432cb42be/issues.csv",
+    "exists": true,
+    "size_bytes": 2866
+  },
+  {
+    "name": "check_results_parquet",
+    "path": "data/marts/dq_check_results/run_id=f6b46fd4-e455-5870-b832-5aa432cb42be/check_results.parquet",
+    "exists": true,
+    "size_bytes": 13876
+  },
+  {
+    "name": "issue_log_parquet",
+    "path": "data/marts/dq_issue_log/run_id=f6b46fd4-e455-5870-b832-5aa432cb42be/issue_log.parquet",
+    "exists": true,
+    "size_bytes": 11436
+  },
+  {
+    "name": "issue_lifecycle_parquet",
+    "path": "data/marts/dq_issue_lifecycle/issue_lifecycle.parquet",
+    "exists": true,
+    "size_bytes": 11391
+  },
+  {
+    "name": "project_metrics_history_parquet",
+    "path": "data/marts/project_metrics_history/project_metrics.parquet",
+    "exists": true,
+    "size_bytes": 22316
+  }
+]

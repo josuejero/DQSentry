@@ -1,0 +1,237 @@
+{
+  "run_id": "f6b46fd4-e455-5870-b832-5aa432cb42be",
+  "run_ts": "2026-05-04T17:27:46.216856+00:00",
+  "dataset_name": "phase1",
+  "generated_at": "2026-05-04T17:27:58.399742+00:00",
+  "commit_sha": "df9436c0059f46b54633e952ebcd4a7e5860cfa9",
+  "branch": "master",
+  "workflow_name": "DQ Push Pipeline",
+  "workflow_run_id": "25333159543",
+  "workflow_attempt": "1",
+  "overall_score": 98.22,
+  "score_threshold": 90.0,
+  "critical_severity": 5.0,
+  "quality_gate_status": "pass",
+  "total_checks": 27,
+  "passed_checks": 21,
+  "warning_checks": 1,
+  "failed_checks": 5,
+  "check_pass_rate": 0.7778,
+  "critical_failed_checks": 0,
+  "subscores": {
+    "completeness": 97.7,
+    "consistency": 100.0,
+    "integrity": 100.0,
+    "uniqueness": 94.41,
+    "validity_accuracy": 100.0
+  },
+  "issue_counts": {
+    "duplicate": 3,
+    "missing": 2
+  },
+  "total_issues": 5,
+  "max_severity": 4,
+  "max_affected_pct": 0.1666666666666666,
+  "issue_root_cause_coverage_pct": 1.0,
+  "rule_summary": {
+    "total_rules": 27,
+    "dimensions": {
+      "validity_accuracy": 8,
+      "completeness": 6,
+      "consistency": 5,
+      "uniqueness": 5,
+      "integrity": 3
+    },
+    "tables": {
+      "users": 10,
+      "events": 6,
+      "resources": 4,
+      "newsletter": 4,
+      "districts": 2,
+      "*": 1
+    },
+    "rule_types": {
+      "NULL_PERCENTAGE": 6,
+      "DUPLICATE_PERCENTAGE": 5,
+      "DATE_RANGE": 4,
+      "PATTERN": 3,
+      "ENUM": 3,
+      "FK": 3,
+      "NON_NEGATIVE_COUNTS": 1,
+      "TIMESTAMP_ORDER": 1,
+      "UNIQUE_MAPPING": 1
+    },
+    "severity_counts": {
+      "2": 9,
+      "3": 9,
+      "4": 5,
+      "5": 4
+    },
+    "total_weight": 30.0,
+    "documentation_coverage_pct": 1.0
+  },
+  "regression": {
+    "status": "pass",
+    "generated_at": "2026-05-04T17:27:51.772428+00:00",
+    "run_id": "f8d44371-2f34-57b6-ae7c-190fff0bfd55",
+    "dataset_name": "phase1",
+    "tolerance": 0.01,
+    "expected_score": 98.22,
+    "actual_score": 98.22,
+    "score_delta": 0.0,
+    "expected_failed_checks": 5,
+    "actual_failed_checks": 5,
+    "failed_check_delta": 0,
+    "issue_count_deltas": {
+      "duplicate": 0,
+      "missing": 0
+    },
+    "subscore_deltas": {
+      "completeness": 0.0,
+      "validity_accuracy": 0.0,
+      "consistency": 0.0,
+      "uniqueness": 0.0,
+      "integrity": 0.0
+    }
+  },
+  "coverage": {
+    "generated_at": "2026-05-04T17:27:56.525091+00:00",
+    "line_coverage_pct": 7.18,
+    "covered_lines": 161,
+    "missing_lines": 1956,
+    "num_statements": 2117,
+    "branch_coverage_pct": 5.18,
+    "covered_branches": 23,
+    "missing_branches": 421,
+    "num_branches": 444
+  },
+  "security": {},
+  "scorecard_published": true,
+  "open_issue_count": 5,
+  "new_issue_count": 0,
+  "recurring_issue_count": 5,
+  "resolved_or_not_seen_issue_count": 0,
+  "artifacts": [
+    {
+      "name": "scorecard_html",
+      "path": "reports/latest/index.html",
+      "exists": true,
+      "size_bytes": 21559
+    },
+    {
+      "name": "score_json",
+      "path": "reports/latest/score.json",
+      "exists": true,
+      "size_bytes": 13542
+    },
+    {
+      "name": "issues_csv",
+      "path": "reports/latest/issues.csv",
+      "exists": true,
+      "size_bytes": 2866
+    },
+    {
+      "name": "project_metrics_json",
+      "path": "reports/latest/project_metrics.json",
+      "exists": true,
+      "size_bytes": 2846
+    },
+    {
+      "name": "employer_metrics_md",
+      "path": "reports/latest/employer_metrics.md",
+      "exists": true,
+      "size_bytes": 1091
+    },
+    {
+      "name": "artifact_manifest_json",
+      "path": "reports/latest/artifact_manifest.json",
+      "exists": true,
+      "size_bytes": 3
+    },
+    {
+      "name": "coverage_summary_json",
+      "path": "reports/latest/coverage_summary.json",
+      "exists": true,
+      "size_bytes": 267
+    },
+    {
+      "name": "regression_metrics_json",
+      "path": "reports/latest/regression_metrics.json",
+      "exists": true,
+      "size_bytes": 557
+    },
+    {
+      "name": "security_summary_json",
+      "path": "reports/latest/security/security_summary.json",
+      "exists": false,
+      "size_bytes": 0
+    },
+    {
+      "name": "sbom_json",
+      "path": "reports/latest/security/bom.json",
+      "exists": false,
+      "size_bytes": 0
+    },
+    {
+      "name": "gitleaks_json",
+      "path": "reports/latest/security/gitleaks.json",
+      "exists": false,
+      "size_bytes": 0
+    },
+    {
+      "name": "openssf_scorecard_json",
+      "path": "reports/latest/security/openssf-scorecard.json",
+      "exists": false,
+      "size_bytes": 0
+    },
+    {
+      "name": "profile_html",
+      "path": "reports/runs/f6b46fd4-e455-5870-b832-5aa432cb42be/profile.html",
+      "exists": false,
+      "size_bytes": 0
+    },
+    {
+      "name": "profile_html_partitioned",
+      "path": "reports/runs/run_id=f6b46fd4-e455-5870-b832-5aa432cb42be/profile.html",
+      "exists": false,
+      "size_bytes": 0
+    },
+    {
+      "name": "archived_scorecard",
+      "path": "reports/runs/run_id=f6b46fd4-e455-5870-b832-5aa432cb42be/index.html",
+      "exists": true,
+      "size_bytes": 21559
+    },
+    {
+      "name": "archived_issues_csv",
+      "path": "reports/runs/run_id=f6b46fd4-e455-5870-b832-5aa432cb42be/issues.csv",
+      "exists": true,
+      "size_bytes": 2866
+    },
+    {
+      "name": "check_results_parquet",
+      "path": "data/marts/dq_check_results/run_id=f6b46fd4-e455-5870-b832-5aa432cb42be/check_results.parquet",
+      "exists": true,
+      "size_bytes": 13876
+    },
+    {
+      "name": "issue_log_parquet",
+      "path": "data/marts/dq_issue_log/run_id=f6b46fd4-e455-5870-b832-5aa432cb42be/issue_log.parquet",
+      "exists": true,
+      "size_bytes": 11436
+    },
+    {
+      "name": "issue_lifecycle_parquet",
+      "path": "data/marts/dq_issue_lifecycle/issue_lifecycle.parquet",
+      "exists": true,
+      "size_bytes": 11391
+    },
+    {
+      "name": "project_metrics_history_parquet",
+      "path": "data/marts/project_metrics_history/project_metrics.parquet",
+      "exists": true,
+      "size_bytes": 22316
+    }
+  ],
+  "artifact_count": 14
+}

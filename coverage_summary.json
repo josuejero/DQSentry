@@ -1,0 +1,11 @@
+{
+  "generated_at": "2026-05-04T17:27:56.525091+00:00",
+  "line_coverage_pct": 7.18,
+  "covered_lines": 161,
+  "missing_lines": 1956,
+  "num_statements": 2117,
+  "branch_coverage_pct": 5.18,
+  "covered_branches": 23,
+  "missing_branches": 421,
+  "num_branches": 444
+}

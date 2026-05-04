@@ -199,8 +199,8 @@
       <span class="badge">Latest run</span>
       <h1>DQ Scorecard</h1>
       <p class="meta">
-        Dataset phase1 · Run cee4d945-bac6-5c97-bc55-99225adfd54b · 2026-05-04T06:40:13.802376+00:00
-        · Generated at 2026-05-04T06:40:14.901799+00:00
+        Dataset phase1 · Run f6b46fd4-e455-5870-b832-5aa432cb42be · 2026-05-04T17:27:46.216856+00:00
+        · Generated at 2026-05-04T17:27:47.481717+00:00
       </p>
       <div class="score-box">
         <span class="score-value">98.2</span>
@@ -248,6 +248,66 @@
         
       </div>
     </section>
+
+    
+    <section>
+      <h2>Project metrics</h2>
+      <p class="section-note">
+        Employer-facing summary of validation coverage, quality gating, regression safety, and published artifacts.
+      </p>
+      <div class="grid">
+        <article>
+          <h3>Quality gate</h3>
+          <strong>Pass</strong>
+          <span class="section-note">Score threshold 90.0</span>
+        </article>
+        <article>
+          <h3>Critical failures</h3>
+          <strong>0</strong>
+          <span class="section-note">Severity-gated checks</span>
+        </article>
+        <article>
+          <h3>Check pass rate</h3>
+          <strong>77.8%</strong>
+          <span class="section-note">Passed checks / total checks</span>
+        </article>
+        <article>
+          <h3>Root-cause coverage</h3>
+          <strong>100.0%</strong>
+          <span class="section-note">Issues with fix guidance</span>
+        </article>
+        <article>
+          <h3>Open issues</h3>
+          <strong>5</strong>
+          <span class="section-note">0 new · 5 recurring</span>
+        </article>
+        <article>
+          <h3>Regression</h3>
+          <strong>Pass</strong>
+          <span class="section-note">Golden dataset baseline</span>
+        </article>
+        <article>
+          <h3>Line coverage</h3>
+          <strong>7.18</strong>
+          <span class="section-note">pytest-cov summary</span>
+        </article>
+        <article>
+          <h3>Artifacts</h3>
+          <strong>10</strong>
+          <span class="section-note">Published run outputs</span>
+        </article>
+        <article>
+          <h3>OpenSSF</h3>
+          <strong>N/A</strong>
+          <span class="section-note">Security scorecard</span>
+        </article>
+      </div>
+      <p class="section-note" style="margin-top: 1rem;">
+        Downloadable summary: <a href="employer_metrics.md" download>employer_metrics.md</a> ·
+        Machine-readable metrics: <a href="project_metrics.json" download>project_metrics.json</a>
+      </p>
+    </section>
+    
 
     <section>
       <h2>Checks summary</h2>
@@ -629,9 +689,10 @@
 <text x="40" y="164.0" text-anchor="end">2</text>
 <text x="40" y="109.0" text-anchor="end">2</text>
 <text x="40" y="54.0" text-anchor="end">3</text>
-<polyline fill="none" stroke="#1f77b4" stroke-width="2" points="450.0,50.0" />
-<polyline fill="none" stroke="#ff7f0e" stroke-width="2" points="450.0,123.3" />
-<text x="450.0" y="290.0" text-anchor="end" transform="rotate(-45 450.0 290.0)">2026-05-04 06:40</text></svg>
+<polyline fill="none" stroke="#1f77b4" stroke-width="2" points="50.0,50.0 850.0,50.0" />
+<polyline fill="none" stroke="#ff7f0e" stroke-width="2" points="50.0,123.3 850.0,123.3" />
+<text x="50.0" y="290.0" text-anchor="end" transform="rotate(-45 50.0 290.0)">f6b46fd4-e455-5870-b832-5aa432cb42be · 2026-05-04 17:27</text>
+<text x="850.0" y="290.0" text-anchor="end" transform="rotate(-45 850.0 290.0)">f8d44371-2f34-57b6-ae7c-190fff0bfd55 · 2026-05-04 17:27</text></svg>
       </div>
       
       <div class="chart-legend">
@@ -651,9 +712,9 @@
       
       <ul class="issue-totals">
         
-        <li>duplicate: 3</li>
+        <li>duplicate: 6</li>
         
-        <li>missing: 2</li>
+        <li>missing: 4</li>
         
       </ul>
       
@@ -682,9 +743,9 @@
             <td>resources_resource_id_unique</td>
             <td>resources</td>
             <td>duplicate</td>
-            <td>1</td>
+            <td>2</td>
             <td>0.167</td>
-            <td>2026-05-04T06:40:13.802376+00:00</td>
+            <td>2026-05-04T17:27:51.586388+00:00</td>
             <td>Resource IDs must stay unique inside the catalog.</td>
             <td>Enforce DUPLICATE_PERCENTAGE for resources</td>
           </tr>
@@ -693,9 +754,9 @@
             <td>users_district_id_not_null</td>
             <td>users</td>
             <td>missing</td>
-            <td>1</td>
+            <td>2</td>
             <td>0.125</td>
-            <td>2026-05-04T06:40:13.802376+00:00</td>
+            <td>2026-05-04T17:27:51.586388+00:00</td>
             <td>Upstream export omitted district join</td>
             <td>Add district_id to export template and enforce ingestion join</td>
           </tr>
@@ -704,9 +765,9 @@
             <td>users_email_not_null</td>
             <td>users</td>
             <td>missing</td>
-            <td>1</td>
+            <td>2</td>
             <td>0.125</td>
-            <td>2026-05-04T06:40:13.802376+00:00</td>
+            <td>2026-05-04T17:27:51.586388+00:00</td>
             <td>CRM export allows blank email when contact is incomplete</td>
             <td>Add validation on source and require email before export</td>
           </tr>
@@ -715,9 +776,9 @@
             <td>users_email_org_unique</td>
             <td>users</td>
             <td>duplicate</td>
-            <td>1</td>
+            <td>2</td>
             <td>0.125</td>
-            <td>2026-05-04T06:40:13.802376+00:00</td>
+            <td>2026-05-04T17:27:51.586388+00:00</td>
             <td>The (email, org) compound key should dedupe duplicates.</td>
             <td>Enforce DUPLICATE_PERCENTAGE for users</td>
           </tr>
@@ -726,9 +787,9 @@
             <td>users_email_unique</td>
             <td>users</td>
             <td>duplicate</td>
-            <td>1</td>
+            <td>2</td>
             <td>0.125</td>
-            <td>2026-05-04T06:40:13.802376+00:00</td>
+            <td>2026-05-04T17:27:51.586388+00:00</td>
             <td>Email should uniquely identify CRM records.</td>
             <td>Enforce DUPLICATE_PERCENTAGE for users</td>
           </tr>

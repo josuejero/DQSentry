@@ -1,0 +1,24 @@
+{
+  "status": "pass",
+  "generated_at": "2026-05-04T17:27:51.772428+00:00",
+  "run_id": "f8d44371-2f34-57b6-ae7c-190fff0bfd55",
+  "dataset_name": "phase1",
+  "tolerance": 0.01,
+  "expected_score": 98.22,
+  "actual_score": 98.22,
+  "score_delta": 0.0,
+  "expected_failed_checks": 5,
+  "actual_failed_checks": 5,
+  "failed_check_delta": 0,
+  "issue_count_deltas": {
+    "duplicate": 0,
+    "missing": 0
+  },
+  "subscore_deltas": {
+    "completeness": 0.0,
+    "validity_accuracy": 0.0,
+    "consistency": 0.0,
+    "uniqueness": 0.0,
+    "integrity": 0.0
+  }
+}

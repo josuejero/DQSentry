@@ -29,12 +29,6 @@ For a human-readable summary, open `reports/latest/employer_metrics.md`.
 - **Architecture docs:** `docs/operational-guide.md`
 - **Main code to inspect:** `scripts/ingest.py`, `scripts/validate_runner.py`, `scripts/score.py`, `dq/config/rules.yml`
 
-## Employer scan
-**Best fit roles:** Data Quality Engineer, Analytics Engineer, QA Automation Engineer, Data Engineer  
-**Core stack:** Python, DuckDB, Pandas, Great Expectations, Parquet, YAML, GitHub Actions  
-**What this proves:** CSV ingestion, validation rules, scoring logic, generated artifacts, regression safety, published reporting  
-**Start here:** `scripts/`, `dq/config/`, `reports/templates/scorecard.html.jinja`, `docs/operational-guide.md`
-
 ## What to inspect first
 - **Live scorecard:** start with `https://josuejero.github.io/DQSentry/` to see the latest quality score, issue summaries, trend context, and published reporting output.
 - **Streamlit validator:** open `https://dqsentry.streamlit.app/` to upload CSV exports and run the same ingest→validation→score workflow interactively.

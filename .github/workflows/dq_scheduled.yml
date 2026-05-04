@@ -118,7 +118,7 @@ jobs:
 
       - name: Upload run artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dq-scheduled-run-${{ steps.score.outputs.run_id }}
           path: |

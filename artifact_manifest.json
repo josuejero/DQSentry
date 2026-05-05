@@ -21,7 +21,7 @@
     "name": "project_metrics_json",
     "path": "reports/latest/project_metrics.json",
     "exists": true,
-    "size_bytes": 2848
+    "size_bytes": 2851
   },
   {
     "name": "employer_metrics_md",
@@ -73,39 +73,39 @@
   },
   {
     "name": "profile_html",
-    "path": "reports/runs/21a64545-22db-5dba-96de-dbb008f52990/profile.html",
+    "path": "reports/runs/72e30fc3-3ba2-5fb1-a9f5-5916de7e7c94/profile.html",
     "exists": false,
     "size_bytes": 0
   },
   {
     "name": "profile_html_partitioned",
-    "path": "reports/runs/run_id=21a64545-22db-5dba-96de-dbb008f52990/profile.html",
+    "path": "reports/runs/run_id=72e30fc3-3ba2-5fb1-a9f5-5916de7e7c94/profile.html",
     "exists": false,
     "size_bytes": 0
   },
   {
     "name": "archived_scorecard",
-    "path": "reports/runs/run_id=21a64545-22db-5dba-96de-dbb008f52990/index.html",
+    "path": "reports/runs/run_id=72e30fc3-3ba2-5fb1-a9f5-5916de7e7c94/index.html",
     "exists": true,
     "size_bytes": 21559
   },
   {
     "name": "archived_issues_csv",
-    "path": "reports/runs/run_id=21a64545-22db-5dba-96de-dbb008f52990/issues.csv",
+    "path": "reports/runs/run_id=72e30fc3-3ba2-5fb1-a9f5-5916de7e7c94/issues.csv",
     "exists": true,
     "size_bytes": 2866
   },
   {
     "name": "check_results_parquet",
-    "path": "data/marts/dq_check_results/run_id=21a64545-22db-5dba-96de-dbb008f52990/check_results.parquet",
+    "path": "data/marts/dq_check_results/run_id=72e30fc3-3ba2-5fb1-a9f5-5916de7e7c94/check_results.parquet",
     "exists": true,
     "size_bytes": 13876
   },
   {
     "name": "issue_log_parquet",
-    "path": "data/marts/dq_issue_log/run_id=21a64545-22db-5dba-96de-dbb008f52990/issue_log.parquet",
+    "path": "data/marts/dq_issue_log/run_id=72e30fc3-3ba2-5fb1-a9f5-5916de7e7c94/issue_log.parquet",
     "exists": true,
-    "size_bytes": 11327
+    "size_bytes": 11453
   },
   {
     "name": "issue_lifecycle_parquet",
@@ -117,6 +117,6 @@
     "name": "project_metrics_history_parquet",
     "path": "data/marts/project_metrics_history/project_metrics.parquet",
     "exists": true,
-    "size_bytes": 22326
+    "size_bytes": 22341
   }
 ]

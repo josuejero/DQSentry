@@ -1,7 +1,7 @@
 # DQSentry project metrics
 
-Generated: 2026-07-03T07:22:26.405674+00:00
-Run ID: `e3bcdc11-51d0-58cc-bc0f-7c1d3c4907ab`
+Generated: 2026-07-04T06:48:38.655254+00:00
+Run ID: `6ccae567-b5af-540d-a511-0a35dd57e84e`
 Dataset: `phase1`
 
 ## Employer scan
@@ -59,11 +59,11 @@ Dataset: `phase1`
 - `reports/latest/security/bom.json` - missing
 - `reports/latest/security/gitleaks.json` - missing
 - `reports/latest/security/openssf-scorecard.json` - missing
-- `reports/runs/e3bcdc11-51d0-58cc-bc0f-7c1d3c4907ab/profile.html` - missing
-- `reports/runs/run_id=e3bcdc11-51d0-58cc-bc0f-7c1d3c4907ab/profile.html` - missing
-- `reports/runs/run_id=e3bcdc11-51d0-58cc-bc0f-7c1d3c4907ab/index.html` - present
-- `reports/runs/run_id=e3bcdc11-51d0-58cc-bc0f-7c1d3c4907ab/issues.csv` - present
-- `data/marts/dq_check_results/run_id=e3bcdc11-51d0-58cc-bc0f-7c1d3c4907ab/check_results.parquet` - present
-- `data/marts/dq_issue_log/run_id=e3bcdc11-51d0-58cc-bc0f-7c1d3c4907ab/issue_log.parquet` - present
+- `reports/runs/6ccae567-b5af-540d-a511-0a35dd57e84e/profile.html` - missing
+- `reports/runs/run_id=6ccae567-b5af-540d-a511-0a35dd57e84e/profile.html` - missing
+- `reports/runs/run_id=6ccae567-b5af-540d-a511-0a35dd57e84e/index.html` - present
+- `reports/runs/run_id=6ccae567-b5af-540d-a511-0a35dd57e84e/issues.csv` - present
+- `data/marts/dq_check_results/run_id=6ccae567-b5af-540d-a511-0a35dd57e84e/check_results.parquet` - present
+- `data/marts/dq_issue_log/run_id=6ccae567-b5af-540d-a511-0a35dd57e84e/issue_log.parquet` - present
 - `data/marts/dq_issue_lifecycle/issue_lifecycle.parquet` - present
 - `data/marts/project_metrics_history/project_metrics.parquet` - present

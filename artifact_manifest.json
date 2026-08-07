@@ -73,39 +73,39 @@
   },
   {
     "name": "profile_html",
-    "path": "reports/runs/69118dd3-bb1e-5c01-9697-ba6ba978f428/profile.html",
+    "path": "reports/runs/57c752bf-4981-5a40-b7b5-266c7f018cce/profile.html",
     "exists": false,
     "size_bytes": 0
   },
   {
     "name": "profile_html_partitioned",
-    "path": "reports/runs/run_id=69118dd3-bb1e-5c01-9697-ba6ba978f428/profile.html",
+    "path": "reports/runs/run_id=57c752bf-4981-5a40-b7b5-266c7f018cce/profile.html",
     "exists": false,
     "size_bytes": 0
   },
   {
     "name": "archived_scorecard",
-    "path": "reports/runs/run_id=69118dd3-bb1e-5c01-9697-ba6ba978f428/index.html",
+    "path": "reports/runs/run_id=57c752bf-4981-5a40-b7b5-266c7f018cce/index.html",
     "exists": true,
     "size_bytes": 21559
   },
   {
     "name": "archived_issues_csv",
-    "path": "reports/runs/run_id=69118dd3-bb1e-5c01-9697-ba6ba978f428/issues.csv",
+    "path": "reports/runs/run_id=57c752bf-4981-5a40-b7b5-266c7f018cce/issues.csv",
     "exists": true,
     "size_bytes": 2866
   },
   {
     "name": "check_results_parquet",
-    "path": "data/marts/dq_check_results/run_id=69118dd3-bb1e-5c01-9697-ba6ba978f428/check_results.parquet",
+    "path": "data/marts/dq_check_results/run_id=57c752bf-4981-5a40-b7b5-266c7f018cce/check_results.parquet",
     "exists": true,
     "size_bytes": 13876
   },
   {
     "name": "issue_log_parquet",
-    "path": "data/marts/dq_issue_log/run_id=69118dd3-bb1e-5c01-9697-ba6ba978f428/issue_log.parquet",
+    "path": "data/marts/dq_issue_log/run_id=57c752bf-4981-5a40-b7b5-266c7f018cce/issue_log.parquet",
     "exists": true,
-    "size_bytes": 11448
+    "size_bytes": 11331
   },
   {
     "name": "issue_lifecycle_parquet",

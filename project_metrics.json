@@ -1,12 +1,12 @@
 {
-  "run_id": "c36d1c46-7f9f-5a41-baea-d6110b9f307b",
-  "run_ts": "2026-08-18T04:36:41.508717+00:00",
+  "run_id": "654c7590-559a-5fba-9696-d4f34375beaa",
+  "run_ts": "2026-08-19T04:38:01.857374+00:00",
   "dataset_name": "phase1",
-  "generated_at": "2026-08-18T04:36:51.457302+00:00",
+  "generated_at": "2026-08-19T04:38:12.515517+00:00",
   "commit_sha": "42150c09eac8c56c2b557f92f1ee8f2653b7479c",
   "branch": "master",
   "workflow_name": "DQ Scheduled Pipeline",
-  "workflow_run_id": "32099725377",
+  "workflow_run_id": "32216416398",
   "workflow_attempt": "1",
   "overall_score": 98.22,
   "score_threshold": 90.0,
@@ -72,7 +72,7 @@
   },
   "regression": {
     "status": "pass",
-    "generated_at": "2026-08-18T04:36:46.274347+00:00",
+    "generated_at": "2026-08-19T04:38:06.870131+00:00",
     "run_id": "f8d44371-2f34-57b6-ae7c-190fff0bfd55",
     "dataset_name": "phase1",
     "tolerance": 0.01,
@@ -95,7 +95,7 @@
     }
   },
   "coverage": {
-    "generated_at": "2026-08-18T04:36:49.608276+00:00",
+    "generated_at": "2026-08-19T04:38:10.531260+00:00",
     "line_coverage_pct": 7.18,
     "covered_lines": 161,
     "missing_lines": 1956,
@@ -186,39 +186,39 @@
     },
     {
       "name": "profile_html",
-      "path": "reports/runs/c36d1c46-7f9f-5a41-baea-d6110b9f307b/profile.html",
+      "path": "reports/runs/654c7590-559a-5fba-9696-d4f34375beaa/profile.html",
       "exists": false,
       "size_bytes": 0
     },
     {
       "name": "profile_html_partitioned",
-      "path": "reports/runs/run_id=c36d1c46-7f9f-5a41-baea-d6110b9f307b/profile.html",
+      "path": "reports/runs/run_id=654c7590-559a-5fba-9696-d4f34375beaa/profile.html",
       "exists": false,
       "size_bytes": 0
     },
     {
       "name": "archived_scorecard",
-      "path": "reports/runs/run_id=c36d1c46-7f9f-5a41-baea-d6110b9f307b/index.html",
+      "path": "reports/runs/run_id=654c7590-559a-5fba-9696-d4f34375beaa/index.html",
       "exists": true,
       "size_bytes": 21559
     },
     {
       "name": "archived_issues_csv",
-      "path": "reports/runs/run_id=c36d1c46-7f9f-5a41-baea-d6110b9f307b/issues.csv",
+      "path": "reports/runs/run_id=654c7590-559a-5fba-9696-d4f34375beaa/issues.csv",
       "exists": true,
       "size_bytes": 2866
     },
     {
       "name": "check_results_parquet",
-      "path": "data/marts/dq_check_results/run_id=c36d1c46-7f9f-5a41-baea-d6110b9f307b/check_results.parquet",
+      "path": "data/marts/dq_check_results/run_id=654c7590-559a-5fba-9696-d4f34375beaa/check_results.parquet",
       "exists": true,
       "size_bytes": 13876
     },
     {
       "name": "issue_log_parquet",
-      "path": "data/marts/dq_issue_log/run_id=c36d1c46-7f9f-5a41-baea-d6110b9f307b/issue_log.parquet",
+      "path": "data/marts/dq_issue_log/run_id=654c7590-559a-5fba-9696-d4f34375beaa/issue_log.parquet",
       "exists": true,
-      "size_bytes": 11330
+      "size_bytes": 11366
     },
     {
       "name": "issue_lifecycle_parquet",
